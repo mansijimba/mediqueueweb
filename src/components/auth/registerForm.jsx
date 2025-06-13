@@ -33,30 +33,32 @@ const RegisterForm = () => {
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm your password"),
     }),
-    onSubmit: async (values) => {
-      try {
-        const response = await axios.post("http://localhost:5050/api/auth/register", {
-          fullName: values.fullName,
-          username: values.username,
-          phoneNumber: values.phoneNumber,
-          email: values.email,
-          password: values.password,
-          role: selectedRole,
-        });
+ onSubmit: async (values, { resetForm }) => {
+  try {
+    const response = await axios.post("http://localhost:5050/api/auth/register", {
+      fullName: values.fullName,
+      username: values.username,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      password: values.password,
+      role: selectedRole,
+    });
 
-        if (response.data.success) {
-          toast.success("Registration successful!");
-          setTimeout(() => navigate("/"), 1000);
-        } else {
-          setApiError(response.data.message || "Registration failed");
-          toast.error(response.data.message || "Registration failed");
-        }
-      } catch (err) {
-        const errorMsg = err.response?.data?.message || "Server error";
-        setApiError(errorMsg);
-        toast.error(errorMsg);
-      }
-    },
+    if (response.data.success) {
+      toast.success("Registration successful! ");
+      resetForm(); // Clears the form fields
+      setTimeout(() => navigate("/"), 1000); //  Redirects to homepage
+    } else {
+      setApiError(response.data.message || "Registration failed");
+      toast.error(response.data.message || "Registration failed");
+    }
+  } catch (err) {
+    const errorMsg = err.response?.data?.message || "Server error";
+    setApiError(errorMsg);
+    toast.error(errorMsg);
+  }
+}
+
   });
 
   return (
