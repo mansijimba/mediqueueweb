@@ -4,7 +4,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import { HomePage } from '../pages/Homepage'
 import MainLayout from '../layout/MainLayout'
-import AuthContextProvider from '../auth/authProvider'
+import AuthContextProvider from '../auth/AuthProvider'
 import Dashboard from '../pages/Dashboard'
 
 export default function AppRouter() {
