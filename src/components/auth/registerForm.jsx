@@ -12,17 +12,17 @@ const RegisterForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
+      fullName: "",
       username: "",
+      phoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      firstName: Yup.string().required("First name is required"),
-      lastName: Yup.string().required("Last name is required"),
+      fullName: Yup.string().required("FULL name is required"),
       username: Yup.string().required("Username is required"),
+      phoneNumber: Yup.string().required("PhoneNumber is required"),
       email: Yup.string().email("Invalid email").required("Email is required"),
       password: Yup.string().min(6, "At least 6 characters").required("Password is required"),
       confirmPassword: Yup.string()
@@ -32,9 +32,9 @@ const RegisterForm = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post("http://localhost:5050/api/auth/register", {
-          firstName: values.firstName,
-          lastName: values.lastName,
+          fullName: values.fullName,
           username: values.username,
+          phoneNumber: values.phoneNumber,
           email: values.email,
           password: values.password,
         });
@@ -69,11 +69,11 @@ const RegisterForm = () => {
             className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.firstName}
+            value={formik.values.fullName}
           />
           <User className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.firstName && formik.errors.firstName && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.firstName}</p>
+          {formik.touched.fullName && formik.errors.fullName && (
+            <p className="text-red-500 text-xs mt-1">{formik.errors.fullName}</p>
           )}
         </div>
 
@@ -95,7 +95,7 @@ const RegisterForm = () => {
             <p className="text-red-500 text-xs mt-1">{formik.errors.username}</p>
           )}
         </div>
-            {/* Last Name */}
+            {/* Phone Number */}
         <div className="relative text-left">
           <input
             type="number"
