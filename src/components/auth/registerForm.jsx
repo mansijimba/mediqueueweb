@@ -4,7 +4,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import RoleSelector from "./roleSelector"; 
+import RoleSelector from "./roleSelector";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -43,12 +45,16 @@ const RegisterForm = () => {
         });
 
         if (response.data.success) {
-          navigate("/login");
+          toast.success("Registration successful!");
+          setTimeout(() => navigate("/"), 1000);
         } else {
           setApiError(response.data.message || "Registration failed");
+          toast.error(response.data.message || "Registration failed");
         }
       } catch (err) {
-        setApiError(err.response?.data?.message || "Server error");
+        const errorMsg = err.response?.data?.message || "Server error";
+        setApiError(errorMsg);
+        toast.error(errorMsg);
       }
     },
   });
@@ -63,10 +69,9 @@ const RegisterForm = () => {
       <h2 className="text-teal-700 font-semibold text-lg mb-4">Create Your MediQueue Account</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
+        <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
 
-          <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
-
-        {/* First Name */}
+        {/* Full Name */}
         <div className="relative text-left">
           <input
             type="text"
@@ -82,8 +87,6 @@ const RegisterForm = () => {
             <p className="text-red-500 text-xs mt-1">{formik.errors.fullName}</p>
           )}
         </div>
-
-    
 
         {/* Username */}
         <div className="relative text-left">
@@ -101,20 +104,21 @@ const RegisterForm = () => {
             <p className="text-red-500 text-xs mt-1">{formik.errors.username}</p>
           )}
         </div>
-            {/* Phone Number */}
+
+        {/* Phone Number */}
         <div className="relative text-left">
           <input
-            type="number"
-            name="number"
+            type="text"
+            name="phoneNumber"
             placeholder="Phone Number"
             className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.number}
+            value={formik.values.phoneNumber}
           />
           <User className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.number && formik.errors.number && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.number}</p>
+          {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+            <p className="text-red-500 text-xs mt-1">{formik.errors.phoneNumber}</p>
           )}
         </div>
 
@@ -190,13 +194,15 @@ const RegisterForm = () => {
         </button>
       </form>
 
-      {/* Link to Login */}
       <p className="mt-4 text-sm">
         Already have an account?{" "}
-        <NavLink to="/login" className="text-teal-600 font-medium hover:underline">
+        <NavLink to="/homepage" className="text-teal-600 font-medium hover:underline">
           Log In
         </NavLink>
       </p>
+
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 };
