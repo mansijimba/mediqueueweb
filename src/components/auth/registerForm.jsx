@@ -4,11 +4,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import RoleSelector from "./roleSelector"; 
 
 const RegisterForm = () => {
   const navigate = useNavigate();
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("patient");
 
   const formik = useFormik({
     initialValues: {
@@ -37,6 +39,7 @@ const RegisterForm = () => {
           phoneNumber: values.phoneNumber,
           email: values.email,
           password: values.password,
+          role: selectedRole,
         });
 
         if (response.data.success) {
@@ -60,6 +63,9 @@ const RegisterForm = () => {
       <h2 className="text-teal-700 font-semibold text-lg mb-4">Create Your MediQueue Account</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
+
+          <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
+
         {/* First Name */}
         <div className="relative text-left">
           <input
@@ -144,9 +150,9 @@ const RegisterForm = () => {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2.5 top-3 text-gray-400 hover:text-gray-700"
+            className="absolute right-2.5 text-gray-400 hover:text-gray-700"
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
           </button>
           {formik.touched.password && formik.errors.password && (
             <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
