@@ -1,0 +1,122 @@
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { FcGoogle } from "react-icons/fc"; // For Google icon
+
+const LoginForm = () => {
+  const navigate = useNavigate();
+  const [apiError, setApiError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Invalid email").required("Required"),
+      password: Yup.string().min(6, "At least 6 characters").required("Required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post("http://localhost:5050/api/auth/login", values);
+        if (response.data.success) {
+          localStorage.setItem("token", response.data.token);
+          navigate("/dashboard");
+          console.log("login success");
+        } else {
+          setApiError(response.data.message || "Login failed");
+        }
+      } catch (err) {
+        setApiError(err.response?.data?.message || "Server error");
+      }
+    },
+  });
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm text-center border border-gray-200">
+      {/* Logo */}
+      <div className="flex justify-center mb-2">
+        <div className="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center">
+          <span className="text-white text-2xl font-bold">🩺</span>
+        </div>
+      </div>
+      <h2 className="text-teal-700 font-semibold text-lg mb-4">Welcome To MediQueue</h2>
+
+      {/* Form */}
+      <form onSubmit={formik.handleSubmit} className="space-y-4">
+        {/* Email */}
+        <div className="relative text-left">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+          />
+          <Mail className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
+          {formik.touched.email && formik.errors.email && (
+            <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
+          )}
+        </div>
+
+        {/* Password */}
+        <div className="relative text-left">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            className="w-full border border-gray-300 rounded-md p-2 pl-8 pr-8 text-sm"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+          />
+          <Lock className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2.5 top-3 text-gray-400 hover:text-gray-700"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+          <NavLink
+            to="/forgot-password"
+            className="text-xs text-right text-gray-600 mt-1 inline-block w-full hover:underline"
+          >
+            Forgot Password
+          </NavLink>
+          {formik.touched.password && formik.errors.password && (
+            <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
+          )}
+        </div>
+
+        {apiError && (
+          <p className="text-red-500 text-xs text-left">{apiError}</p>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="w-full bg-teal-700 text-white py-2 rounded-md font-semibold hover:bg-teal-800 transition"
+        >
+          Log In
+        </button>
+      </form>
+
+      {/* Sign Up */}
+      <p className="mt-4 text-sm">
+        Don’t have an account?{" "}
+        <NavLink to="/register" className="text-teal-600 font-medium hover:underline">
+          Sign Up
+        </NavLink>
+      </p>
+    </div>
+  );
+};
+
+export default LoginForm;
