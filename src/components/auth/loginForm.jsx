@@ -80,9 +80,9 @@ const LoginForm = () => {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2.5 top-3 text-gray-400 hover:text-gray-700"
+            className="absolute right-2.5 text-gray-400 hover:text-gray-700"
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
           </button>
           <NavLink
             to="/forgot-password"

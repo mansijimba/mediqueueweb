@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import RegisterForm from '../components/auth/registerForm'
-import { AuthContext } from '../auth/authProvider' 
+import { AuthContext } from '../auth/AuthProvider';
 
 export default function Register() {
   const user = useContext (AuthContext)

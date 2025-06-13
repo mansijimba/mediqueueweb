@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { loginUserService } from "../services/authServices";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { AuthContext } from "../auth/authProvider";
+import { AuthContext } from "../auth/AuthProvider";
 
 
 export const useLoginUser =() => {
