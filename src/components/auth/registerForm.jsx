@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import RoleSelector from "./roleSelector";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,7 +11,6 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("patient");
 
   const formik = useFormik({
     initialValues: {
@@ -41,7 +39,6 @@ const RegisterForm = () => {
       phoneNumber: values.phoneNumber,
       email: values.email,
       password: values.password,
-      role: selectedRole,
     });
 
     if (response.data.success) {
@@ -71,8 +68,7 @@ const RegisterForm = () => {
       <h2 className="text-teal-700 font-semibold text-lg mb-4">Create Your MediQueue Account</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-        <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
-
+      
         {/* Full Name */}
         <div className="relative text-left">
           <input
