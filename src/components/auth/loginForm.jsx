@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc"; // For Google icon
 
-const LoginForm = () => {
+const LoginForm = ({ switchToRegister }) => {
   const navigate = useNavigate();
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -111,9 +111,13 @@ const LoginForm = () => {
       {/* Sign Up */}
       <p className="mt-4 text-sm">
         Don’t have an account?{" "}
-        <NavLink to="/register" className="text-teal-600 font-medium hover:underline">
-          Sign Up
-        </NavLink>
+        <button
+  type="button"
+  onClick={switchToRegister}
+  className="text-teal-600 font-medium hover:underline"
+>
+  Sign Up
+</button>
       </p>
     </div>
   );
