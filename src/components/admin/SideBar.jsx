@@ -34,7 +34,7 @@ const sidebarItems = [
   },
   {
     title: "Queue Management",
-    href: "/admin/queue",
+    href: "/admin/queues",
     icon: <ClipboardList className="h-5 w-5" />,
   },
   {
