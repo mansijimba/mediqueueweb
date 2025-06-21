@@ -1,18 +1,14 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import RoleSelector from "./roleSelector";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const RegisterForm = () => {
-  const navigate = useNavigate();
+const RegisterForm = ({ onSuccess, switchToLogin }) => {
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("patient");
 
   const formik = useFormik({
     initialValues: {
@@ -33,32 +29,32 @@ const RegisterForm = () => {
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm your password"),
     }),
- onSubmit: async (values, { resetForm }) => {
-  try {
-    const response = await axios.post("http://localhost:5050/api/auth/register", {
-      fullName: values.fullName,
-      username: values.username,
-      phoneNumber: values.phoneNumber,
-      email: values.email,
-      password: values.password,
-      role: selectedRole,
-    });
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await axios.post("http://localhost:5050/api/auth/register", {
+          fullName: values.fullName,
+          username: values.username,
+          phoneNumber: values.phoneNumber,
+          email: values.email,
+          password: values.password,
+        });
 
-    if (response.data.success) {
-      toast.success("Registration successful! ");
-      resetForm(); // Clears the form fields
-      setTimeout(() => navigate("/"), 1000); //  Redirects to homepage
-    } else {
-      setApiError(response.data.message || "Registration failed");
-      toast.error(response.data.message || "Registration failed");
-    }
-  } catch (err) {
-    const errorMsg = err.response?.data?.message || "Server error";
-    setApiError(errorMsg);
-    toast.error(errorMsg);
-  }
-}
-
+        if (response.data.success) {
+          toast.success("Registration successful!");
+          resetForm();
+          setTimeout(() => {
+            if (onSuccess) onSuccess();  // ✅ trigger switch to login
+          }, 1000);
+        } else {
+          setApiError(response.data.message || "Registration failed");
+          toast.error(response.data.message || "Registration failed");
+        }
+      } catch (err) {
+        const errorMsg = err.response?.data?.message || "Server error";
+        setApiError(errorMsg);
+        toast.error(errorMsg);
+      }
+    },
   });
 
   return (
@@ -71,123 +67,55 @@ const RegisterForm = () => {
       <h2 className="text-teal-700 font-semibold text-lg mb-4">Create Your MediQueue Account</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-        <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
-
         {/* Full Name */}
-        <div className="relative text-left">
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.fullName}
-          />
-          <User className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.fullName && formik.errors.fullName && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.fullName}</p>
-          )}
-        </div>
-
+        <InputField
+          name="fullName"
+          placeholder="Full Name"
+          icon={<User />}
+          formik={formik}
+        />
         {/* Username */}
-        <div className="relative text-left">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.username}
-          />
-          <User className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.username && formik.errors.username && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.username}</p>
-          )}
-        </div>
-
+        <InputField
+          name="username"
+          placeholder="Username"
+          icon={<User />}
+          formik={formik}
+        />
         {/* Phone Number */}
-        <div className="relative text-left">
-          <input
-            type="text"
-            name="phoneNumber"
-            placeholder="Phone Number"
-            className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.phoneNumber}
-          />
-          <User className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.phoneNumber}</p>
-          )}
-        </div>
-
+        <InputField
+          name="phoneNumber"
+          placeholder="Phone Number"
+          icon={<User />}
+          formik={formik}
+        />
         {/* Email */}
-        <div className="relative text-left">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-          />
-          <Mail className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.email && formik.errors.email && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
-          )}
-        </div>
-
+        <InputField
+          name="email"
+          placeholder="Email"
+          icon={<Mail />}
+          formik={formik}
+        />
         {/* Password */}
-        <div className="relative text-left">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            className="w-full border border-gray-300 rounded-md p-2 pl-8 pr-8 text-sm"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.password}
-          />
-          <Lock className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2.5 text-gray-400 hover:text-gray-700"
-          >
-            {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-          </button>
-          {formik.touched.password && formik.errors.password && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
-          )}
-        </div>
-
+        <PasswordField
+          name="password"
+          placeholder="Password"
+          showPassword={showPassword}
+          togglePassword={() => setShowPassword(!showPassword)}
+          formik={formik}
+        />
         {/* Confirm Password */}
-        <div className="relative text-left">
-          <input
-            type={showPassword ? "text" : "password"}
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            className="w-full border border-gray-300 rounded-md p-2 pl-8 pr-8 text-sm"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.confirmPassword}
-          />
-          <Lock className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
-          {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.confirmPassword}</p>
-          )}
-        </div>
+        <PasswordField
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          showPassword={showPassword}
+          togglePassword={() => setShowPassword(!showPassword)}
+          formik={formik}
+        />
 
-        {/* API Error */}
         {apiError && (
           <p className="text-red-500 text-xs text-left">{apiError}</p>
         )}
 
-        {/* Submit */}
         <button
           type="submit"
           className="w-full bg-teal-700 text-white py-2 rounded-md font-semibold hover:bg-teal-800 transition"
@@ -198,15 +126,62 @@ const RegisterForm = () => {
 
       <p className="mt-4 text-sm">
         Already have an account?{" "}
-        <NavLink to="/homepage" className="text-teal-600 font-medium hover:underline">
+        <button
+          type="button"
+          onClick={switchToLogin}
+          className="text-teal-600 font-medium hover:underline"
+        >
           Log In
-        </NavLink>
+        </button>
       </p>
 
-      {/* Toast Container */}
       <ToastContainer />
     </div>
   );
 };
+
+// Helper Components
+const InputField = ({ name, placeholder, icon, formik }) => (
+  <div className="relative text-left">
+    <input
+      type="text"
+      name={name}
+      placeholder={placeholder}
+      className="w-full border border-gray-300 rounded-md p-2 pl-8 text-sm"
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      value={formik.values[name]}
+    />
+    <div className="absolute left-2.5 top-3 w-4 h-4 text-gray-400">{icon}</div>
+    {formik.touched[name] && formik.errors[name] && (
+      <p className="text-red-500 text-xs mt-1">{formik.errors[name]}</p>
+    )}
+  </div>
+);
+
+const PasswordField = ({ name, placeholder, showPassword, togglePassword, formik }) => (
+  <div className="relative text-left">
+    <input
+      type={showPassword ? "text" : "password"}
+      name={name}
+      placeholder={placeholder}
+      className="w-full border border-gray-300 rounded-md p-2 pl-8 pr-8 text-sm"
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      value={formik.values[name]}
+    />
+    <Lock className="absolute left-2.5 top-3 w-4 h-4 text-gray-400" />
+    <button
+      type="button"
+      onClick={togglePassword}
+      className="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-700"
+    >
+      {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+    </button>
+    {formik.touched[name] && formik.errors[name] && (
+      <p className="text-red-500 text-xs mt-1">{formik.errors[name]}</p>
+    )}
+  </div>
+);
 
 export default RegisterForm;

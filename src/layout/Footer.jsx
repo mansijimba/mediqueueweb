@@ -51,7 +51,6 @@ export function Footer() {
             <h3 className="font-semibold text-gray-800 mb-4">Contact</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>support@mediqueue.com</li>
-              <li>+1 (555) 123-4567</li>
               <li>Mon-Fri 9AM-6PM</li>
             </ul>
           </div>

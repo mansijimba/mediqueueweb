@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { FcGoogle } from "react-icons/fc"; // For Google icon
 
-const LoginForm = () => {
+const LoginForm = ({ switchToRegister }) => {
   const navigate = useNavigate();
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,20 +20,35 @@ const LoginForm = () => {
       email: Yup.string().email("Invalid email").required("Required"),
       password: Yup.string().min(6, "At least 6 characters").required("Required"),
     }),
-    onSubmit: async (values) => {
-      try {
-        const response = await axios.post("http://localhost:5050/api/auth/login", values);
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.token);
-          navigate("/dashboard");
-          console.log("login success");
-        } else {
-          setApiError(response.data.message || "Login failed");
-        }
-      } catch (err) {
-        setApiError(err.response?.data?.message || "Server error");
+onSubmit: async (values) => {
+  try {
+    // Check if it's the admin email
+    const isAdmin = values.email.toLowerCase() === "admin@mediqueue.com";
+
+    const endpoint = isAdmin
+      ? "http://localhost:5050/api/admins/login"
+      : "http://localhost:5050/api/auth/login";
+
+    const response = await axios.post(endpoint, values);
+
+    if (response.data?.token && response.data?.user) {
+      localStorage.setItem("token", response.data.token);
+
+      const role = response.data.user.role;
+
+      if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/user/dashboard");
       }
-    },
+    } else {
+      setApiError(response.data.message || "Login failed");
+    }
+  } catch (err) {
+    setApiError(err.response?.data?.message || "Server error");
+  }
+}
+
   });
 
   return (
@@ -111,9 +126,13 @@ const LoginForm = () => {
       {/* Sign Up */}
       <p className="mt-4 text-sm">
         Don’t have an account?{" "}
-        <NavLink to="/register" className="text-teal-600 font-medium hover:underline">
-          Sign Up
-        </NavLink>
+        <button
+  type="button"
+  onClick={switchToRegister}
+  className="text-teal-600 font-medium hover:underline"
+>
+  Sign Up
+</button>
       </p>
     </div>
   );
