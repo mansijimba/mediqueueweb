@@ -10,7 +10,6 @@ export default function AuthModal({ show, onClose }) {
   //   isLogin = state; 
   // };
 
-  console.log("setIsLogin:", setIsLogin);
   if (!show) return null;
 
   const handleSwitchToRegister = () => {
