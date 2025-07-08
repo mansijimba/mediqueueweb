@@ -13,16 +13,14 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
   const formik = useFormik({
     initialValues: {
       fullName: "",
-      username: "",
       phoneNumber: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      fullName: Yup.string().required("FULL name is required"),
-      username: Yup.string().required("Username is required"),
-      phoneNumber: Yup.string().required("PhoneNumber is required"),
+      fullName: Yup.string().required("Full name is required"),
+      phoneNumber: Yup.string().required("Phone number is required"),
       email: Yup.string().email("Invalid email").required("Email is required"),
       password: Yup.string().min(6, "At least 6 characters").required("Password is required"),
       confirmPassword: Yup.string()
@@ -33,8 +31,7 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
       try {
         const response = await axios.post("http://localhost:5050/api/auth/register", {
           fullName: values.fullName,
-          username: values.username,
-          phoneNumber: values.phoneNumber,
+          phone: values.phoneNumber, // ✅ this is the key fix
           email: values.email,
           password: values.password,
         });
@@ -43,7 +40,7 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
           toast.success("Registration successful!");
           resetForm();
           setTimeout(() => {
-            if (onSuccess) onSuccess();  // ✅ trigger switch to login
+            if (onSuccess) onSuccess();
           }, 1000);
         } else {
           setApiError(response.data.message || "Registration failed");
@@ -71,13 +68,6 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
         <InputField
           name="fullName"
           placeholder="Full Name"
-          icon={<User />}
-          formik={formik}
-        />
-        {/* Username */}
-        <InputField
-          name="username"
-          placeholder="Username"
           icon={<User />}
           formik={formik}
         />
@@ -140,7 +130,7 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
   );
 };
 
-// Helper Components
+// Reusable Input Field
 const InputField = ({ name, placeholder, icon, formik }) => (
   <div className="relative text-left">
     <input
@@ -152,20 +142,21 @@ const InputField = ({ name, placeholder, icon, formik }) => (
       onBlur={formik.handleBlur}
       value={formik.values[name]}
     />
-    <div className="absolute left-2.5 top-3 w-4 h-4 text-gray-400">{icon}</div>
+    <div className="absolute left-1 top-2 w-4 h-4 text-gray-400">{icon}</div>
     {formik.touched[name] && formik.errors[name] && (
       <p className="text-red-500 text-xs mt-1">{formik.errors[name]}</p>
     )}
   </div>
 );
 
+// Reusable Password Field
 const PasswordField = ({ name, placeholder, showPassword, togglePassword, formik }) => (
   <div className="relative text-left">
     <input
       type={showPassword ? "text" : "password"}
       name={name}
       placeholder={placeholder}
-      className="w-full border border-gray-300 rounded-md p-2 pl-8 pr-8 text-sm"
+      className="w-full border border-gray-300 rounded-md p-2 pl-10 pr-10 text-sm"
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
       value={formik.values[name]}
@@ -174,9 +165,9 @@ const PasswordField = ({ name, placeholder, showPassword, togglePassword, formik
     <button
       type="button"
       onClick={togglePassword}
-      className="absolute right-2.5 top-2.5 text-gray-400 hover:text-gray-700"
+      className="absolute right-3 top-[4px] text-gray-400 hover:text-gray-700"
     >
-      {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+      {showPassword ? <Eye className="h-3 w-4" /> : <EyeOff className="h-3 w-4" />}
     </button>
     {formik.touched[name] && formik.errors[name] && (
       <p className="text-red-500 text-xs mt-1">{formik.errors[name]}</p>

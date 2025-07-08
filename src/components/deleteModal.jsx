@@ -17,7 +17,7 @@ export default function DeleteModal(
             <p>{description}</p>
         </div>
         <div>
-            <button onClick={onClose}>Cancle</button>
+            <button onClick={onClose}>Cancel</button>
             <button onClick={onConfirm}>Delete</button>
         </div>
     </div>

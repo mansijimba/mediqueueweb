@@ -9,7 +9,7 @@ export default function Login() {
 
   const returnToHome = (event) => {
     if (event) event.preventDefault();
-    navigate('/');
+    navigate('/homepage');
   };
 
   if (user) {

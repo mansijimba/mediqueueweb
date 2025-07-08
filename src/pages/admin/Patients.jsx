@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAdminPatients } from "../../hooks/admin/useAdminPatients"; // You need to create this hook
+import { useAdminPatients } from "../../hooks/admin/useAdminPatient"; // You need to create this hook
 
 export default function PatientsPage() {
   const { patients, isPending, error } = useAdminPatients();
