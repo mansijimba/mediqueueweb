@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import {
-  useAdminAppointments,
-  useDeleteAppointment,
-} from "../../hooks/admin/useAdminAppointment";
-import DeleteModal from "../deleteModal";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import DeleteModal from "../deleteModal";
+import { useAdminAppointments, useDeleteAppointment } from "../../hooks/admin/useAdminAppointment";
 
 export default function AppointmentTable() {
   const { appointments, isPending, error, refetch } = useAdminAppointments();
@@ -34,11 +31,15 @@ export default function AppointmentTable() {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await axios.patch(`http://localhost:5050/api/admin/appointments/${editId}/status`, editedFields);
+      await axios.patch(
+        `http://localhost:5050/api/admin/appointments/${editId}/status`,
+        editedFields
+      );
       setEditId(null);
-      await refetch(); // update UI
+      await refetch(); // refresh the appointment list
     } catch (err) {
       console.error("Update error:", err);
+      alert("Failed to update appointment");
     } finally {
       setLoading(false);
     }
@@ -53,7 +54,9 @@ export default function AppointmentTable() {
     deleteAppointmentHook.mutate(deleteId, {
       onSuccess: () => {
         setDeleteId(null);
+        refetch(); // refresh the appointment list after deletion
       },
+      onError: () => alert("Failed to delete appointment"),
     });
   };
 
@@ -65,7 +68,7 @@ export default function AppointmentTable() {
       <h2 className="text-xl font-semibold mb-4">Appointment Table</h2>
 
       <DeleteModal
-        isOpen={deleteId}
+        isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="Delete Confirmation"
@@ -85,6 +88,13 @@ export default function AppointmentTable() {
           </tr>
         </thead>
         <tbody>
+          {appointments.length === 0 && (
+            <tr>
+              <td colSpan="7" className="text-center py-4">
+                No appointments found.
+              </td>
+            </tr>
+          )}
           {appointments.map((appt) => {
             const isEditing = appt._id === editId;
             return (
@@ -120,9 +130,10 @@ export default function AppointmentTable() {
                       onChange={handleChange}
                       className="border px-2 rounded"
                     >
-                      <option value="Scheduled">Scheduled</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
                     </select>
                   ) : (
                     appt.status
