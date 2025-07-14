@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { FcGoogle } from "react-icons/fc"; // For Google icon
 
 const LoginForm = ({ switchToRegister }) => {
   const navigate = useNavigate();
@@ -24,33 +23,45 @@ const LoginForm = ({ switchToRegister }) => {
     }),
     onSubmit: async (values) => {
       try {
-        // Check if it's the admin email
-        const isAdmin = values.email.toLowerCase() === "admin@mediqueue.com";
+        const adminEmail = "admin@mediqueue.com";
+        const adminPassword = "Mediqueue@08";
 
-        const endpoint = isAdmin
-          ? "http://localhost:5050/api/admins/login"
-          : "http://localhost:5050/api/auth/login";
+        // Client-side admin check (for testing/demo only)
+        if (
+          values.email.toLowerCase() === adminEmail &&
+          values.password === adminPassword
+        ) {
+          // Fake admin login success
+          const adminUser = { email: adminEmail, role: "admin", name: "Admin" };
+          const fakeToken = "fake-admin-token";
+
+          localStorage.setItem("token", fakeToken);
+          localStorage.setItem("user", JSON.stringify(adminUser));
+
+          navigate("/admin");
+          return; // Skip API call
+        }
+
+        // Normal login API call for others
+        const endpoint =
+          values.email.toLowerCase() === adminEmail
+            ? "http://localhost:5050/api/admins/login"
+            : "http://localhost:5050/api/auth/login";
 
         const response = await axios.post(endpoint, values);
-        console.log(response)
 
         if (response.data?.token && response.data?.user) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("user", JSON.stringify(response.data.user));
 
-          
-
           const role = response.data.user.role;
 
-          if (role == "admin") {
-            console.log("redirecting to admin")
+          if (role === "admin") {
             navigate("/admin");
           } else {
-            console.log("redirecting to homepage")
             navigate("/homepage");
           }
-        } 
-        else {
+        } else {
           setApiError(response.data.message || "Login failed");
         }
       } catch (err) {
@@ -107,11 +118,7 @@ const LoginForm = ({ switchToRegister }) => {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-400 hover:text-gray-700"
           >
-            {showPassword ? (
-              <Eye className="h-3 w-4" />
-            ) : (
-              <EyeOff className="h-3 w-4" />
-            )}
+            {showPassword ? <Eye className="h-3 w-4" /> : <EyeOff className="h-3 w-4" />}
           </button>
 
           <NavLink
@@ -121,15 +128,11 @@ const LoginForm = ({ switchToRegister }) => {
             Forgot Password
           </NavLink>
           {formik.touched.password && formik.errors.password && (
-            <p className="text-red-500 text-xs mt-1">
-              {formik.errors.password}
-            </p>
+            <p className="text-red-500 text-xs mt-1">{formik.errors.password}</p>
           )}
         </div>
 
-        {apiError && (
-          <p className="text-red-500 text-xs text-left">{apiError}</p>
-        )}
+        {apiError && <p className="text-red-500 text-xs text-left">{apiError}</p>}
 
         {/* Submit */}
         <button

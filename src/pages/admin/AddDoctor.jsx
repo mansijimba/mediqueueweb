@@ -49,7 +49,7 @@ export default function AddDoctor() {
     if (formData.file) {
       data.append("image", formData.file);
     }
-
+    console.log(formData)
     try {
       await axios.post("http://localhost:5050/api/admin/doctors", data);
       navigate("/admin/doctors");

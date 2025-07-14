@@ -18,7 +18,7 @@ export function Header({ onProfileClick }) {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/about">About Us</NavLink>
           <NavLink to="/services">Services</NavLink>
-          <NavLink to="/doctors">Doctors</NavLink>
+          <NavLink to="/doctor">Doctors</NavLink>
         </nav>
 
         {/* Profile Icon */}

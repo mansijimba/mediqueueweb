@@ -49,7 +49,7 @@ export default function Homepage() {
             <h1 className="text-3xl md:text-4xl font-pacifico text-teal-600 leading-snug">
               Simplify Healthcare Visits
               <br />
-              with MediQueue
+              with MediQueuess
             </h1>
             <p className="text-gray-700 text-base md:text-lg">
               MediQueue is a smart queue and appointment management app designed to connect
