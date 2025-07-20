@@ -39,17 +39,14 @@ export default function AddDoctor() {
     setError("");
 
     const data = new FormData();
-    data.append("name", formData.name);
-    data.append("specialty", formData.specialty);
-    data.append("email", formData.email);
-    data.append("phone", formData.phone);
-    data.append("status", formData.status);
-    data.append("availability", formData.availability);
-    data.append("appointments", formData.appointments);
-    if (formData.file) {
-      data.append("image", formData.file);
-    }
-    console.log(formData)
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "file" && value) {
+        data.append("image", value);
+      } else {
+        data.append(key, value);
+      }
+    });
+
     try {
       await axios.post("http://localhost:5050/api/admin/doctors", data);
       navigate("/admin/doctors");
@@ -62,133 +59,83 @@ export default function AddDoctor() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white shadow-md p-6 rounded">
-      <h2 className="text-2xl font-semibold mb-6">Add New Doctor</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 p-4">
+      <div className="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-3xl w-full max-w-2xl p-8 transition-transform transform hover:scale-105">
+        <h2 className="text-4xl font-bold text-teal-700 text-center mb-8 tracking-wide">
+          Add New Doctor
+        </h2>
 
-      {error && <div className="mb-4 text-red-500 text-sm">{error}</div>}
+        {error && (
+          <div className="mb-4 text-red-700 bg-red-100 border border-red-300 px-4 py-2 rounded-lg text-center shadow">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
-        <div>
-          <label className="block mb-1 font-medium">Name</label>
-          <input
-            type="text"
-            name="name"
-            required
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {[
+            { label: "Name", name: "name", type: "text", required: true },
+            { label: "Specialty", name: "specialty", type: "text", required: true },
+            { label: "Email", name: "email", type: "email", required: true },
+            { label: "Phone", name: "phone", type: "tel", required: true },
+            { label: "Availability", name: "availability", type: "text", required: false },
+            { label: "Appointments", name: "appointments", type: "number", required: false, min: 0 },
+          ].map((field) => (
+            <div key={field.name}>
+              <label className="block mb-1 font-semibold text-gray-700">{field.label}</label>
+              <input
+                type={field.type}
+                name={field.name}
+                required={field.required}
+                value={formData[field.name]}
+                onChange={handleChange}
+                min={field.min || undefined}
+                className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-400 transition-all shadow-inner"
+              />
+            </div>
+          ))}
 
-        {/* Specialty */}
-        <div>
-          <label className="block mb-1 font-medium">Specialty</label>
-          <input
-            type="text"
-            name="specialty"
-            required
-            value={formData.specialty}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Status</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-400 transition-all shadow-inner"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="On Leave">On Leave</option>
+            </select>
+          </div>
 
-        {/* Email */}
-        <div>
-          <label className="block mb-1 font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Profile Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-400 transition-all shadow-inner"
+            />
+          </div>
 
-        {/* Phone */}
-        <div>
-          <label className="block mb-1 font-medium">Phone</label>
-          <input
-            type="tel"
-            name="phone"
-            required
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        {/* Availability */}
-        <div>
-          <label className="block mb-1 font-medium">Availability</label>
-          <input
-            type="text"
-            name="availability"
-            value={formData.availability}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="block mb-1 font-medium">Status</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-            <option value="On Leave">On Leave</option>
-          </select>
-        </div>
-
-        {/* Appointments */}
-        <div>
-          <label className="block mb-1 font-medium">Appointments</label>
-          <input
-            type="number"
-            name="appointments"
-            value={formData.appointments}
-            onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-            min="0"
-          />
-        </div>
-
-        {/* Profile Photo */}
-        <div>
-          <label className="block mb-1 font-medium">Profile Photo</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full"
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-between">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700"
-          >
-            {loading ? "Adding..." : "Add Doctor"}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/admin/doctors")}
-            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+          <div className="flex justify-between items-center mt-6">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-6 py-2 rounded-xl hover:from-teal-700 hover:to-teal-800 shadow-lg transform hover:scale-105 transition-all"
+            >
+              {loading ? "Adding..." : "Add Doctor"}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/admin/doctors")}
+              className="bg-gray-400 text-white px-6 py-2 rounded-xl hover:bg-gray-500 shadow-lg transform hover:scale-105 transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

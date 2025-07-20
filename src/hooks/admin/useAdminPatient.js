@@ -7,31 +7,20 @@ export function useAdminPatients() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let isMounted = true; // to prevent setting state on unmounted component
-
     const fetchPatients = async () => {
       try {
-        setIsPending(true);
-        setError(null);
-
-        const response = await axios.get("http://localhost:5050/api/admin/patients");
-        if (isMounted) {
-          setPatients(response.data.patients || []); // adjust if your data shape is different
-          setIsPending(false);
-        }
+        const res = await axios.get("http://localhost:5050/api/admin/patients");
+        console.log("Fetched patients:", res.data.patients); // Should be array of users
+        setPatients(res.data.patients);
+        setIsPending(false);
       } catch (err) {
-        if (isMounted) {
-          setError(err.response?.data || { message: "Failed to fetch patients" });
-          setIsPending(false);
-        }
+        console.error("Error fetching patients:", err);
+        setError(err);
+        setIsPending(false);
       }
     };
 
     fetchPatients();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   return { patients, isPending, error };

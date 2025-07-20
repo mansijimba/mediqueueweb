@@ -7,6 +7,7 @@ import DeleteModal from "../deleteModal";
 export default function DoctorTable() {
   const { doctors, isPending, error, refetch } = useAdminDoctors();
   const deleteDoctorHook = useDeleteDoctor();
+
   const [editDoctorId, setEditDoctorId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [editedFields, setEditedFields] = useState({ status: "", availability: "" });
@@ -54,16 +55,15 @@ export default function DoctorTable() {
     });
   };
 
-  if (isPending) return <div>Loading doctors...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isPending) return <div className="text-center py-6">Loading doctors...</div>;
+  if (error) return <div className="text-center text-red-500 py-6">Error: {error.message}</div>;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow border">
-      {/* Header and Add Button */}
+    <div className="p-6 bg-white rounded-2xl shadow-lg">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Doctor Availability</h2>
+        <h2 className="text-2xl font-bold text-teal-700">Doctor List</h2>
         <Link to="addDoctor">
-          <button className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 text-sm">
+          <button className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow hover:scale-105 transition">
             + Add Doctor
           </button>
         </Link>
@@ -74,35 +74,32 @@ export default function DoctorTable() {
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="Delete Confirmation"
-        description="Are you sure you want to delete this appointment?"
+        description="Are you sure you want to delete this doctor?"
       />
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300 text-gray-700 text-sm">
-          <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
-            <tr>
-              <th className="px-4 py-3 border">Photo</th>
-              <th className="px-4 py-3 border">Doctor</th>
-              <th className="px-4 py-3 border">Specialty</th>
-              <th className="px-4 py-3 border">Availability</th>
-              <th className="px-4 py-3 border">Appointments</th>
-              <th className="px-4 py-3 border">Status</th>
-              <th className="px-4 py-3 border text-right">Actions</th>
+        <table className="min-w-full text-sm text-gray-700 rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-teal-600 text-white">
+              <th className="px-4 py-3">Photo</th>
+              <th className="px-4 py-3">Doctor</th>
+              <th className="px-4 py-3">Specialty</th>
+              <th className="px-4 py-3">Availability</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {doctors.map((doctor) => {
               const isEditing = editDoctorId === doctor._id;
-              const appointmentFillWidth = Math.min((doctor.appointments / 10) * 100, 100);
-
               return (
-                <tr key={doctor._id} className="hover:bg-gray-50 border-b text-center">
-                  <td className="px-4 py-3 border">
+                <tr key={doctor._id} className="hover:bg-gray-50 transition border-b text-center">
+                  <td className="px-4 py-3">
                     {doctor.filepath ? (
                       <img
                         src={`http://localhost:5050/${doctor.filepath}`}
                         alt={doctor.name}
-                        className="h-12 w-12 rounded-full object-cover mx-auto"
+                        className="h-12 w-12 rounded-full object-cover mx-auto shadow"
                       />
                     ) : (
                       <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-500 mx-auto">
@@ -110,64 +107,62 @@ export default function DoctorTable() {
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 border font-medium">{doctor.name}</td>
-                  <td className="px-4 py-3 border">{doctor.specialty}</td>
+                  <td className="px-4 py-3 font-semibold">{doctor.name}</td>
+                  <td className="px-4 py-3">{doctor.specialty}</td>
 
-                  <td className="px-4 py-3 border">
+                  <td className="px-4 py-3">
                     {isEditing ? (
                       <input
                         name="availability"
                         value={editedFields.availability}
                         onChange={handleInputChange}
-                        className="border rounded px-2 text-sm"
+                        className="border rounded px-2 py-1 text-sm w-28 text-center"
                       />
                     ) : (
                       doctor.availability || "N/A"
                     )}
                   </td>
 
-                  <td className="px-4 py-3 border">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-full max-w-[140px] bg-gray-200 rounded-full h-2.5">
-                        <div
-                          className="bg-teal-600 h-2.5 rounded-full"
-                          style={{ width: `${appointmentFillWidth}%` }}
-                        />
-                      </div>
-                      <span className="text-sm">{doctor.appointments}</span>
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-3 border">
+                  <td className="px-4 py-3 capitalize">
                     {isEditing ? (
                       <select
                         name="status"
                         value={editedFields.status}
                         onChange={handleInputChange}
-                        className="border rounded px-2 text-sm"
+                        className="border rounded px-2 py-1 text-sm w-28 text-center"
                       >
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
                         <option value="On Leave">On Leave</option>
                       </select>
                     ) : (
-                      doctor.status
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          doctor.status === "Active"
+                            ? "bg-green-100 text-green-700"
+                            : doctor.status === "Inactive"
+                            ? "bg-gray-200 text-gray-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {doctor.status}
+                      </span>
                     )}
                   </td>
 
-                  <td className="px-4 py-3 border text-right space-x-2 whitespace-nowrap">
+                  <td className="px-4 py-3 text-right space-x-2 whitespace-nowrap">
                     {isEditing ? (
                       <>
                         <button
                           onClick={handleSave}
-                          className="px-2 py-1 bg-green-500 text-white rounded text-sm"
+                          className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition"
                           disabled={loading}
                         >
                           {loading ? "Saving..." : "Save"}
                         </button>
                         <button
                           onClick={handleCancel}
-                          className="px-2 py-1 bg-gray-400 text-white rounded text-sm"
+                          className="bg-gray-400 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
                         >
                           Cancel
                         </button>
@@ -175,19 +170,19 @@ export default function DoctorTable() {
                     ) : (
                       <>
                         <Link to={`/admin/doctors/${doctor._id}`}>
-                          <button className="px-2 py-1 bg-blue-500 text-white rounded text-sm">
+                          <button className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition">
                             View
                           </button>
                         </Link>
                         <button
                           onClick={() => handleEditClick(doctor)}
-                          className="px-2 py-1 bg-yellow-500 text-white rounded text-sm"
+                          className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => setDeleteId(doctor._id)}
-                          className="px-2 py-1 bg-red-500 text-white rounded text-sm"
+                          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
                         >
                           Delete
                         </button>

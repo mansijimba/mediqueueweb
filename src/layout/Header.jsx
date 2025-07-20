@@ -1,9 +1,32 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { UserCircle } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { UserCircle, LogOut } from "lucide-react";
 import logo from "../assets/logo/medilogo.png";
 
 export function Header({ onProfileClick }) {
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleProfileClick = () => {
+    if (isLoggedIn) {
+      navigate("/profile");
+    } else {
+      onProfileClick(); // Opens Auth Modal
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+    window.location.reload(); // Optional to refresh app state
+  };
+
   return (
     <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
       {/* Logo */}
@@ -24,9 +47,17 @@ export function Header({ onProfileClick }) {
         {/* Profile Icon */}
         <UserCircle
           className="w-8 h-8 text-teal-600 cursor-pointer"
-          onClick={onProfileClick}
+          onClick={handleProfileClick}
         />
+
+        {/* Logout Icon (only if logged in) */}
+        {isLoggedIn && (
+          <LogOut
+            className="w-7 h-7 text-teal-500 cursor-pointer hover:text-teal-700"
+            onClick={handleLogout}
+          />
+        )}
       </div>
     </header>
   );
-}
+}  

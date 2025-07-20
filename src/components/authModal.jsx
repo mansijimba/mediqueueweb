@@ -1,20 +1,14 @@
-// components/AuthModal.jsx
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import LoginForm from "./auth/loginForm";
 import RegisterForm from "./auth/registerForm";
 
 export default function AuthModal({ show, onClose }) {
-  const [isLogin,setIsLogin]=useState(false);
-  // function setIsLogin(state){
-  //   isLogin = state; 
-  // };
+  const [isLogin, setIsLogin] = useState(false);
 
   if (!show) return null;
 
-  const handleSwitchToRegister = () => {
-    setIsLogin(false);
-  };
+  const handleSwitchToRegister = () => setIsLogin(false);
   const handleSwitchToLogin = () => setIsLogin(true);
 
   return (
@@ -28,11 +22,10 @@ export default function AuthModal({ show, onClose }) {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Conditionally render login/register form */}
         {isLogin ? (
-          <LoginForm switchToRegister={handleSwitchToRegister} />
+          <LoginForm switchToRegister={handleSwitchToRegister} onSuccess={onClose} />
         ) : (
-          <RegisterForm switchToLogin={handleSwitchToLogin} />
+          <RegisterForm switchToLogin={handleSwitchToLogin} onSuccess={onClose} />
         )}
       </div>
     </div>

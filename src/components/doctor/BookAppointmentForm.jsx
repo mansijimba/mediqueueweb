@@ -24,13 +24,14 @@ export default function BookAppointmentForm({ doctor }) {
     }
 
     try {
-      await axios.post('http://localhost:5050/api/appointment', {
+      await axios.post('http://localhost:5050/api/appointment/book', {
         doctorId: doctor._id,
         patientId: user?._id,
         specialty: doctor.specialty,
         date: appointmentDateTime.toISOString().split('T')[0], // 'YYYY-MM-DD'
         time: appointmentDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type,
+        status: 'pending',
       });
 
       toast.success('Appointment booked successfully!');

@@ -36,7 +36,7 @@ export default function AppointmentTable() {
         editedFields
       );
       setEditId(null);
-      await refetch(); // refresh the appointment list
+      await refetch();
     } catch (err) {
       console.error("Update error:", err);
       alert("Failed to update appointment");
@@ -54,18 +54,18 @@ export default function AppointmentTable() {
     deleteAppointmentHook.mutate(deleteId, {
       onSuccess: () => {
         setDeleteId(null);
-        refetch(); // refresh the appointment list after deletion
+        refetch();
       },
       onError: () => alert("Failed to delete appointment"),
     });
   };
 
-  if (isPending) return <div>Loading appointments...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isPending) return <div className="text-center py-8">Loading appointments...</div>;
+  if (error) return <div className="text-center py-8 text-red-500">Error: {error.message}</div>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Appointment Table</h2>
+    <div className="p-6 bg-white rounded-2xl shadow-lg">
+      <h2 className="text-2xl font-bold text-teal-700 mb-6 text-center">Appointments List</h2>
 
       <DeleteModal
         isOpen={!!deleteId}
@@ -75,116 +75,116 @@ export default function AppointmentTable() {
         description="Are you sure you want to delete this appointment?"
       />
 
-      <table className="min-w-full table-auto border border-gray-300 text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="px-4 py-2 border">Patient Name</th>
-            <th className="px-4 py-2 border">Doctor Name</th>
-            <th className="px-4 py-2 border">Specialty</th>
-            <th className="px-4 py-2 border">Date</th>
-            <th className="px-4 py-2 border">Time</th>
-            <th className="px-4 py-2 border">Status</th>
-            <th className="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appointments.length === 0 && (
-            <tr>
-              <td colSpan="7" className="text-center py-4">
-                No appointments found.
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-gray-700">
+          <thead>
+            <tr className="bg-gradient-to-r from-teal-500 to-teal-600 text-white">
+              <th className="px-4 py-3 text-center">Patient</th>
+              <th className="px-4 py-3 text-center">Doctor</th>
+              <th className="px-4 py-3 text-center">Specialty</th>
+              <th className="px-4 py-3 text-center">Date</th>
+              <th className="px-4 py-3 text-center">Time</th>
+              <th className="px-4 py-3 text-center">Status</th>
+              <th className="px-4 py-3 text-center">Actions</th>
             </tr>
-          )}
-          {appointments.map((appt) => {
-            const isEditing = appt._id === editId;
-            return (
-              <tr key={appt._id} className="text-center border-t">
-                <td className="border px-4 py-2">{appt.patient?.fullName || "N/A"}</td>
-                <td className="border px-4 py-2">{appt.doctor?.name || "N/A"}</td>
-                <td className="border px-4 py-2">{appt.doctor?.specialty || "N/A"}</td>
-                <td className="border px-4 py-2">
-                  {new Date(appt.date).toLocaleDateString()}
-                </td>
-
-                {/* Editable Time */}
-                <td className="border px-4 py-2">
-                  {isEditing ? (
-                    <input
-                      type="time"
-                      name="time"
-                      value={editedFields.time}
-                      onChange={handleChange}
-                      className="border px-2 rounded"
-                    />
-                  ) : (
-                    appt.time || "-"
-                  )}
-                </td>
-
-                {/* Editable Status */}
-                <td className="border px-4 py-2 capitalize">
-                  {isEditing ? (
-                    <select
-                      name="status"
-                      value={editedFields.status}
-                      onChange={handleChange}
-                      className="border px-2 rounded"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-                  ) : (
-                    appt.status
-                  )}
-                </td>
-
-                {/* Actions */}
-                <td className="border px-4 py-2 space-x-2">
-                  {isEditing ? (
-                    <>
-                      <button
-                        onClick={handleSave}
-                        className="px-2 py-1 bg-green-500 text-white rounded"
-                        disabled={loading}
-                      >
-                        {loading ? "Saving..." : "Save"}
-                      </button>
-                      <button
-                        onClick={handleCancel}
-                        className="px-2 py-1 bg-gray-500 text-white rounded"
-                      >
-                        Cancel
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link to={`/admin/appointments/${appt._id}`}>
-                        <button className="px-2 py-1 bg-blue-500 text-white rounded">
-                          View
-                        </button>
-                      </Link>
-                      <button
-                        onClick={() => handleEdit(appt)}
-                        className="px-2 py-1 bg-yellow-500 text-white rounded"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(appt._id)}
-                        className="px-2 py-1 bg-red-500 text-white rounded"
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
+          </thead>
+          <tbody>
+            {appointments.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="text-center py-6 text-gray-500">
+                  No appointments found.
                 </td>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ) : (
+              appointments.map((appt) => {
+                const isEditing = appt._id === editId;
+                return (
+                  <tr key={appt._id} className="border-b hover:bg-gray-50 transition">
+                    <td className="px-4 py-2 text-center">{appt.patient?.fullName || "N/A"}</td>
+                    <td className="px-4 py-2 text-center">{appt.doctor?.name || "N/A"}</td>
+                    <td className="px-4 py-2 text-center">{appt.doctor?.specialty || "N/A"}</td>
+                    <td className="px-4 py-2 text-center">
+                      {new Date(appt.date).toLocaleDateString()}
+                    </td>
+
+                    <td className="px-4 py-2 text-center">
+                      {isEditing ? (
+                        <input
+                          type="time"
+                          name="time"
+                          value={editedFields.time}
+                          onChange={handleChange}
+                          className="border px-2 py-1 rounded-md"
+                        />
+                      ) : (
+                        appt.time
+                      )}
+                    </td>
+
+                    <td className="px-4 py-2 text-center capitalize">
+                      {isEditing ? (
+                        <select
+                          name="status"
+                          value={editedFields.status}
+                          onChange={handleChange}
+                          className="border px-2 py-1 rounded-md"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="completed">Completed</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      ) : (
+                        appt.status
+                      )}
+                    </td>
+
+                    <td className="px-4 py-2 text-center space-x-2">
+                      {isEditing ? (
+                        <>
+                          <button
+                            onClick={handleSave}
+                            disabled={loading}
+                            className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition"
+                          >
+                            {loading ? "Saving..." : "Save"}
+                          </button>
+                          <button
+                            onClick={handleCancel}
+                            className="bg-gray-400 text-white px-3 py-1 rounded-md hover:bg-gray-500 transition"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Link to={`/admin/appointments/${appt._id}`}>
+                            <button className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition">
+                              View
+                            </button>
+                          </Link>
+                          <button
+                            onClick={() => handleEdit(appt)}
+                            className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => setDeleteId(appt._id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
