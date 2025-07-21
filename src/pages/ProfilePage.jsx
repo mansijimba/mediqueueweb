@@ -77,6 +77,7 @@ const ProfilePage = () => {
             <ProfileEdit
               profile={profile}
               setProfile={setProfile}
+              authToken={localStorage.getItem("token")}
               setIsEditing={setIsEditing}
             />
           ) : (

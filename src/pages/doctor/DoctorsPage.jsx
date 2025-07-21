@@ -29,7 +29,7 @@ const DoctorsPage = () => {
             <img
               src={
                 doc.filepath
-                  ? `http://localhost:5050/uploads/${doc.filepath}`
+                  ?`http://localhost:5050/${doc.filepath.replace(/\\/g, "/")}`
                   : 'https://via.placeholder.com/300x200'
               }
               alt={doc.name}
@@ -39,9 +39,6 @@ const DoctorsPage = () => {
             <p className="text-teal-600">{doc.specialty}</p>
             <p className="text-sm text-gray-600 mt-1">
               Availability: {doc.availability || 'N/A'}
-            </p>
-            <p className="text-sm text-gray-600">
-              Appointments: {doc.appointments}
             </p>
             <button
               className="mt-3 px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"

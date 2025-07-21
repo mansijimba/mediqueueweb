@@ -1,72 +1,92 @@
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User, Phone, Mail } from "lucide-react";
 
 const ProfileView = ({ profile, onEdit }) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  if (!profile) return <p>Loading profile...</p>;
+  if (!profile)
+    return (
+      <p className="text-center text-gray-500 animate-pulse mt-10">
+        Loading profile...
+      </p>
+    );
 
   return (
     <>
-      <h2 className="text-center font-bold text-xl mb-8">Profile</h2>
-      <div className="max-w-4xl mx-auto grid grid-cols-2 gap-x-12 gap-y-6">
-        <div>
-          <label className="block mb-1 font-semibold text-sm">Full Name</label>
+      <h2 className="text-center font-extrabold text-4xl mb-12 text-gradient bg-gradient-to-r from-teal-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent select-none">
+        Your Profile
+      </h2>
+
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-12 grid grid-cols-2 gap-10 border border-teal-100 hover:shadow-teal-400/40 transition-shadow duration-500">
+        {/* Full Name */}
+        <div className="relative">
+          <label className="block mb-2 font-semibold text-teal-700 flex items-center gap-2">
+            <User className="w-5 h-5 text-teal-500" /> Full Name
+          </label>
           <input
             type="text"
             value={profile.fullName}
             disabled
-            className="border border-gray-300 rounded px-2 py-1 w-full bg-gray-100"
+            className="w-full border border-teal-300 rounded-xl px-5 py-3 bg-teal-50 text-teal-900 font-semibold shadow-inner focus:outline-none focus:ring-4 focus:ring-cyan-300 transition"
           />
         </div>
 
-        <div>
-          <label className="block mb-1 font-semibold text-sm">
-            Phone Number
+        {/* Phone Number */}
+        <div className="relative">
+          <label className="block mb-2 font-semibold text-teal-700 flex items-center gap-2">
+            <Phone className="w-5 h-5 text-teal-500" /> Phone Number
           </label>
           <input
             type="text"
-            value={profile.phoneNumber}
+            value={profile.phone}
             disabled
-            className="border border-gray-300 rounded px-2 py-1 w-full bg-gray-100"
+            className="w-full border border-teal-300 rounded-xl px-5 py-3 bg-teal-50 text-teal-900 font-semibold shadow-inner focus:outline-none focus:ring-4 focus:ring-cyan-300 transition"
           />
         </div>
 
-        <div>
-          <label className="block mb-1 font-semibold text-sm">Email</label>
+        {/* Email */}
+        <div className="col-span-2 relative">
+          <label className="block mb-2 font-semibold text-teal-700 flex items-center gap-2">
+            <Mail className="w-5 h-5 text-teal-500" /> Email
+          </label>
           <input
             type="email"
             value={profile.email}
             disabled
-            className="border border-gray-300 rounded px-2 py-1 w-full bg-gray-100"
+            className="w-full border border-teal-300 rounded-xl px-5 py-3 bg-teal-50 text-teal-900 font-semibold shadow-inner focus:outline-none focus:ring-4 focus:ring-cyan-300 transition"
           />
         </div>
 
-        <div className="relative col-span-2">
-          <label className="block mb-1 font-semibold text-sm">Password</label>
+        {/* Password */}
+        <div className="relative col-span-2 max-w-full">
+          <label className="block mb-2 font-semibold text-teal-700 flex items-center gap-2">
+            <EyeOff className="w-5 h-5 text-teal-500" /> Password
+          </label>
           <input
             type={showPassword ? "text" : "password"}
-            value={profile.password || "********"}
+            value={profile.password ? profile.password : "********"}
             disabled
-            className="border border-gray-300 rounded px-2 py-1 w-1/2 bg-gray-100 pr-8"
+            className="w-full border border-teal-300 rounded-xl px-5 py-3 bg-teal-50 text-teal-900 font-semibold shadow-inner pr-14 focus:outline-none focus:ring-4 focus:ring-cyan-300 transition"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="ml-2 text-gray-500 hover:text-gray-700"
+            className="absolute right-2 top-14 transform -translate-y-1/2 text-teal-600 hover:text-teal-800 transition"
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
-              <Eye className="h-4 w-5" />
+              <Eye className="w-3 h-4" />
             ) : (
-              <EyeOff className="h-4 w-5" />
+              <EyeOff className="w-3 h-4" />
             )}
           </button>
         </div>
 
-        <div className="col-span-2 flex justify-center mt-6">
+        {/* Edit Button */}
+        <div className="col-span-2 flex justify-center mt-10">
           <button
             onClick={onEdit}
-            className="bg-teal-700 text-white px-8 py-2 rounded hover:bg-teal-800 transition"
+            className="bg-gradient-to-r from-cyan-500 to-teal-600 text-white font-extrabold px-14 py-4 rounded-3xl shadow-lg hover:shadow-cyan-400/60 transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-4 focus:ring-cyan-300"
           >
             Edit Profile
           </button>
