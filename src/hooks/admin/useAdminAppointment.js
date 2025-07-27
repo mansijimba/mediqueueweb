@@ -1,15 +1,11 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getAllAppointmentsService,
   getOneAppointmentService,
   createAppointmentService,
   updateAppointmentService,
   deleteAppointmentService,
-} from "../../services/admin/appointmentService";
+} from "../../services/admin/AppointmentService";
 import { toast } from "react-toastify";
 
 //  GET ALL APPOINTMENTS
