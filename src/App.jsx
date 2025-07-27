@@ -15,19 +15,18 @@ export default function App() {
   }, []);
 
   // Called after successful login
-  const handleLoginSuccess = (token) => {
-    if (token) {
-      localStorage.setItem("token", token);
-      setIsLoggedIn(true);
-    }
-    setShowModal(false);
-  };
+const handleLoginSuccess = (token) => {
+  localStorage.setItem("token", token);
+  setIsLoggedIn(true);
+  setShowModal(false);
+};
 
-  // Called to handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-  };
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  setIsLoggedIn(false);
+};
+
 
   return (
     <Router>

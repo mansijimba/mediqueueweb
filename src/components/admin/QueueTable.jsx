@@ -1,31 +1,91 @@
 "use client";
 
-import React, { useState } from "react";
-import { Clock, Plus, Search } from "lucide-react";
-import { useAdminQueues, useDeleteQueue } from "../../hooks/admin/useAdminQueue"; // your hooks
+import React, { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 import DeleteModal from "../deleteModal";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function QueueTable() {
-  const { queues, isPending, error } = useAdminQueues();
-  console.log("Queues:", queues); 
-  const deleteQueueHook = useDeleteQueue();
+  const [queues, setQueues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [deleteId, setDeleteId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const handleDelete = () => {
-    deleteQueueHook.mutate(deleteId, {
-      onSuccess: () => setDeleteId(null),
-    });
+  const [editId, setEditId] = useState(null);
+  const [editedStatus, setEditedStatus] = useState("");
+
+  const fetchQueues = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("http://localhost:5050/api/admin/queues");
+      if (res.data.success) {
+        setQueues(res.data.data);
+        setError(null);
+      } else {
+        setError("Failed to load queue data");
+      }
+    } catch (err) {
+      setError(err.message || "Error fetching queues");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredQueues = (queues || []).filter((item) => {
+  useEffect(() => {
+    fetchQueues();
+  }, []);
+
+  const handleSave = async () => {
+    if (!editId) return;
+    try {
+      setLoading(true);
+      await axios.patch(`http://localhost:5050/api/admin/queues/${editId}`, {
+        status: editedStatus,
+      });
+      setEditId(null);
+      setEditedStatus("");
+      await fetchQueues();
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("Failed to update queue");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setEditId(null);
+    setEditedStatus("");
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      setDeleting(true);
+      await axios.delete(`http://localhost:5050/api/admin/queues/${deleteId}`);
+      setQueues((prev) => prev.filter((q) => q._id !== deleteId));
+      setDeleteId(null);
+    } catch (err) {
+      alert("Failed to delete queue entry");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const filteredQueues = queues.filter((item) => {
+    const patientName = item.patient?.fullName || item.patient?.name || "";
+    const doctorName = item.doctor?.name || "";
+    const id = item._id || "";
+
     const matchesSearch =
-      item.patient?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.doctor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.id?.toLowerCase().includes(searchTerm.toLowerCase());
+      patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      id.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || item.status === statusFilter;
 
@@ -49,68 +109,18 @@ export default function QueueTable() {
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "High":
-        return "bg-red-100 text-red-800";
-      case "Normal":
-        return "bg-blue-100 text-blue-800";
-      case "Low":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  if (isPending) return <div>Loading queue...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (loading) return <div className="p-6 text-gray-600">Loading queue...</div>;
+  if (error) return <div className="p-6 text-red-600">Error: {error}</div>;
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-800">Queue Management</h1>
-        <button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded flex items-center">
-          <Plus className="mr-2 h-4 w-4" />
-          Add to Queue
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="text-lg font-medium">Current Queue</div>
-          <div className="text-sm text-gray-500 mb-2">Patients currently in queue</div>
-          <div className="text-3xl font-bold text-teal-600">
-            {queues?.filter((q) => q.status === "Waiting" || q.status === "In Progress").length}
-          </div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="text-lg font-medium">Average Wait Time</div>
-          <div className="text-sm text-gray-500 mb-2">Current average waiting time</div>
-          <div className="text-3xl font-bold text-teal-600">14 min</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow">
-          <div className="text-lg font-medium">Expected Patients</div>
-          <div className="text-sm text-gray-500 mb-2">Patients expected today</div>
-          <div className="text-3xl font-bold text-teal-600">
-            {queues?.filter((q) => q.status === "Not Arrived").length}
-          </div>
-        </div>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h1 className="text-4xl font-bold text-gray-900">Queue Management</h1>
+      
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search queue..."
-            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="w-[160px]">
+        <div className="w-[180px]">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -132,67 +142,106 @@ export default function QueueTable() {
         onConfirm={handleDelete}
         title="Delete Confirmation"
         description="Are you sure you want to delete this queue entry?"
+        isLoading={deleting}
       />
 
-      <div className="border rounded-lg overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 table-auto border border-gray-300">
-          <thead className="bg-gray-100">
+      <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
+          <thead className="bg-gray-100 text-left font-semibold">
             <tr>
-              <th className="px-4 py-2 border text-left">Queue #</th>
-              <th className="px-4 py-2 border text-left">Patient</th>
-              <th className="px-4 py-2 border text-left">Doctor</th>
-              <th className="px-4 py-2 border text-left">Appointment</th>
-              <th className="px-4 py-2 border text-left">Arrival</th>
-              <th className="px-4 py-2 border text-left">Wait Time</th>
-              <th className="px-4 py-2 border text-left">Priority</th>
-              <th className="px-4 py-2 border text-left">Status</th>
-              <th className="px-4 py-2 border text-right">Actions</th>
+              <th className="px-4 py-3">Queue #</th>
+              <th className="px-4 py-3">Patient</th>
+              <th className="px-4 py-3">Doctor</th>
+              <th className="px-4 py-3">Appointment</th>
+              {/* Removed Arrival header */}
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-  {filteredQueues.map((queue) => (
-    <tr key={queue._id} className="text-center bg-white hover:bg-gray-50">
-      <td className="border px-4 py-2">{queue.patient?.fullName || "N/A"}</td>
-      <td className="border px-4 py-2">{queue.doctor?.name || "N/A"}</td>
-      <td className="border px-4 py-2">{queue.doctor?.specialty || "N/A"}</td>
-      <td className="border px-4 py-2">{queue.appointmentTime || "N/A"}</td>
-      <td className="border px-4 py-2">{queue.arrivalTime || "N/A"}</td>
-      <td className="border px-4 py-2">{queue.waitTime || "N/A"}</td>
-      <td className="border px-4 py-2">
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(queue.priority)}`}>
-          {queue.priority || "N/A"}
-        </span>
-      </td>
-      <td className="border px-4 py-2">
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(queue.status)}`}>
-          {queue.status || "N/A"}
-        </span>
-      </td>
-      <td className="border px-4 py-2 space-x-2">
-        <Link to={`/admin/queues/${queue._id}`}>
-          <button className="px-2 py-1 bg-blue-500 text-white rounded text-sm">View</button>
-        </Link>
-        <Link to={`/admin/queues/${queue._id}/edit`}>
-          <button className="px-2 py-1 bg-yellow-500 text-white rounded text-sm">Edit</button>
-        </Link>
-        <button
-          onClick={() => setDeleteId(queue._id)}
-          className="px-2 py-1 bg-red-500 text-white rounded text-sm"
-        >
-          Delete
-        </button>
-      </td>
-    </tr>
-  ))}
-  {filteredQueues.length === 0 && (
-    <tr>
-      <td colSpan="9" className="text-center py-4 text-gray-500">
-        No queue entries found.
-      </td>
-    </tr>
-  )}
-</tbody>
-
+            {filteredQueues.map((queue) => (
+              <tr
+                key={queue._id}
+                className="odd:bg-white even:bg-gray-50 hover:bg-gray-100 transition"
+              >
+                <td className="px-4 py-2">{queue.queuePosition || "N/A"}</td>
+                <td className="px-4 py-2">
+                  {queue.patient?.fullName || queue.patient?.name || "N/A"}
+                </td>
+                <td className="px-4 py-2">{queue.doctor?.name || "N/A"}</td>
+                <td className="px-4 py-2">{queue.appointmentTime || "N/A"}</td>
+                {/* Removed Arrival Time cell */}
+                <td className="px-4 py-2">
+                  {editId === queue._id ? (
+                    <select
+                      value={editedStatus}
+                      onChange={(e) => setEditedStatus(e.target.value)}
+                      className="border border-gray-300 rounded px-2 py-1 text-xs"
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Waiting">Waiting</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Not Arrived">Not Arrived</option>
+                      <option value="No Show">No Show</option>
+                    </select>
+                  ) : (
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
+                        queue.status
+                      )}`}
+                    >
+                      {queue.status || "N/A"}
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-2 text-right space-x-2">
+                  {editId === queue._id ? (
+                    <>
+                      <button
+                        onClick={handleSave}
+                        className="px-3 py-1 bg-green-500 text-white rounded text-sm"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleCancel}
+                        className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          setEditId(queue._id);
+                          setEditedStatus(queue.status);
+                        }}
+                        className="px-3 py-1 bg-yellow-500 text-white rounded text-sm"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setDeleteId(queue._id)}
+                        className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {filteredQueues.length === 0 && (
+              <tr>
+                {/* Adjusted colSpan to 6 because one column removed */}
+                <td colSpan="6" className="text-center py-6 text-gray-500 italic">
+                  No queue entries found.
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
       </div>
     </div>

@@ -5,15 +5,21 @@ import RegisterForm from "../components/auth/registerForm";
 import Dashboard from "../pages/Dashboard";
 import MainLayout from "../layout/MainLayout";
 import AuthContextProvider from "../auth/AuthProvider";
+import UserDoctor from "../pages/doctor/DoctorsPage"
+import BookAppointmentPage from "../pages/doctor/BookAppoitmentPage";
+import Profile from "../pages/ProfilePage"
+import Queue from "../pages/QueueStatusPage"
 
 // Admin pages
 import AdminPage from "../pages/admin/AdminPage";
-import DoctorsPage from "../pages/admin/Doctors";
 import PatientsPage from "../pages/admin/Patients";
 import AppointmentTable from "../components/admin/AppointmentTable";
 import QueueTable from "../components/admin/QueueTable";
 import Homepage from "../pages/Homepage";
 import AddDoctor from "../pages/admin/AddDoctor";
+import Doctors from "../pages/admin/Doctors";
+import AboutUs from "../pages/AboutUs";
+import Message from "../pages/admin/MessagePage"
 
 export default function AppRouter() {
   return (
@@ -26,6 +32,11 @@ export default function AppRouter() {
             <Route path="/registerForm" element={<RegisterForm />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/homepage" element={<Homepage />} />
+            <Route path="/doctor" element={<UserDoctor/>}/>
+            <Route path="/doctor/book/:id" element={<BookAppointmentPage />} />
+            <Route path="/about" element={<AboutUs/>}/>
+            <Route path="/profile" element={<Profile/>}/>
+            <Route path = "/queue" element = {<Queue/>}/>
           </Route>
 
           {/* Admin Routes with Sidebar Layout */}
@@ -33,11 +44,11 @@ export default function AppRouter() {
             <Route index element={<div>Welcome to Admin Dashboard</div>} />
             <Route path="appointments" element={<AppointmentTable />} />
             <Route path="queues" element={<QueueTable />} />
-            <Route path="doctors" element={<DoctorsPage />}>
+            <Route path="doctors" element={<Doctors />}/>
               {/* nested routes under doctors */}
-              <Route path="addDoctor" element={<AddDoctor />} />
-            </Route>
+              <Route path="doctors/addDoctor" element={<AddDoctor />} />
             <Route path="patients" element={<PatientsPage />} />
+            <Route path="messages" element={<Message/>} />
           </Route>
         </Routes>
       </BrowserRouter>
