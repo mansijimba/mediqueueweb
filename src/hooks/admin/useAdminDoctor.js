@@ -5,7 +5,7 @@ import {
   createDoctorService,
   updateDoctorService,
   deleteDoctorService,
-} from "../../services/admin/doctorService";
+} from "../../services/admin/DoctorService";
 import { toast } from "react-toastify";
 
 // GET ALL DOCTORS
