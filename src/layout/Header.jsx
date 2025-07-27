@@ -40,7 +40,6 @@ export function Header({ onProfileClick }) {
         <nav className="space-x-6 text-teal-600 font-medium">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/about">About Us</NavLink>
-          <NavLink to="/services">Services</NavLink>
           <NavLink to="/doctor">Doctors</NavLink>
         </nav>
 
