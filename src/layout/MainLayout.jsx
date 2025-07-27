@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from './Header';
-import { Footer } from './footer';
+import { Footer } from './Footer';
 import { Outlet } from 'react-router-dom';
 import AuthModal from '../components/authModal';
 
