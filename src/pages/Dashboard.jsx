@@ -15,7 +15,7 @@ export default function Dashboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % 3);
-    }, 3000);
+    }, 3500);
     return () => clearInterval(interval);
   }, []);
 
@@ -38,20 +38,26 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-100 relative overflow-hidden">
+
+      {/* Floating Blobs */}
+      <div className="absolute -top-24 -left-24 w-72 h-72 bg-teal-200 rounded-full opacity-20 blur-3xl animate-pulse z-0" />
+      <div className="absolute top-1/3 right-0 w-72 h-72 bg-cyan-200 rounded-full opacity-20 blur-3xl animate-pulse z-0" />
 
       {/* Hero Section */}
-      <section className="pt-12 px-4 bg-gradient-to-tl from-slate-50 via-white to-teal-100 w-full">
-        <div className="w-full flex flex-col md:flex-row items-center gap-8 px-4 md:px-12">
+      <section className="pt-20 px-4 relative z-10">
+        <div className="w-full flex flex-col md:flex-row items-center gap-12 px-4 md:px-12">
 
           {/* Text */}
-          <div className="w-full md:w-1/2 space-y-4 text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-pacifico text-teal-600 leading-snug">
-              Simplify Healthcare Visits
+          <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
+              <span className="bg-gradient-to-r from-teal-500 to-cyan-500 bg-clip-text text-transparent">
+                Simplify Healthcare Visits
+              </span>
               <br />
               with MediQueue
             </h1>
-            <p className="text-gray-700 text-base md:text-lg">
+            <p className="text-gray-700 text-lg md:text-xl max-w-md">
               MediQueue is a smart queue and appointment management app designed to connect
               patients with healthcare providers more efficiently.
             </p>
@@ -62,7 +68,7 @@ export default function Dashboard() {
             <img
               src={Image}
               alt="Doctor"
-              className="w-full h-[450px] object-cover"
+              className="w-full h-[450px] object-contain drop-shadow-lg"
             />
           </div>
 
@@ -70,48 +76,55 @@ export default function Dashboard() {
       </section>
 
       {/* Steps Section */}
-      <section className="bg-white py-16">
+      <section className="bg-white py-20 relative z-10">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <MapPin className="mx-auto text-teal-500 w-10 h-10 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Visit the Website</h3>
-              <p className="text-sm text-gray-600">
-                Start by going to our MediQueue website to access the clinic services.
-              </p>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <CalendarCheck className="mx-auto text-teal-500 w-10 h-10 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Select Details</h3>
-              <p className="text-sm text-gray-600">
-                Choose the location, date, time, and healthcare provider for your appointment.
-              </p>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <Clock className="mx-auto text-teal-500 w-10 h-10 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Check Queue Status</h3>
-              <p className="text-sm text-gray-600">
-                Track your spot in the queue live from our virtual system.
-              </p>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <CheckCircle className="mx-auto text-teal-500 w-10 h-10 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Attend the Appointment</h3>
-              <p className="text-sm text-gray-600">
-                Visit the healthcare facility at your scheduled time.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {[
+              {
+                icon: MapPin,
+                title: "Visit the Website",
+                desc: "Start by going to our MediQueue website to access the clinic services.",
+              },
+              {
+                icon: CalendarCheck,
+                title: "Select Details",
+                desc: "Choose the location, date, time, and healthcare provider for your appointment.",
+              },
+              {
+                icon: Clock,
+                title: "Check Queue Status",
+                desc: "Track your spot in the queue live from our virtual system.",
+              },
+              {
+                icon: CheckCircle,
+                title: "Attend the Appointment",
+                desc: "Visit the healthcare facility at your scheduled time.",
+              },
+            ].map((step, idx) => (
+              <div
+                key={idx}
+                className="bg-gray-50 p-8 rounded-xl shadow hover:shadow-xl transition-all duration-300"
+              >
+                <step.icon className="mx-auto text-teal-600 w-12 h-12 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">{step.title}</h3>
+                <p className="text-sm text-gray-600">{step.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Why Choose Section */}
-      <section className="bg-gradient-to-tr from-slate-50 via-white to-teal-100">
+      <section className="bg-gradient-to-tr from-slate-50 via-white to-teal-100 py-20 relative z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Choose MediQueue?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              <span className="bg-gradient-to-r from-teal-500 to-cyan-500 bg-clip-text text-transparent">
+                Why Choose MediQueue?
+              </span>
+            </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Experience the future of healthcare management with our innovative features
+              Experience the future of healthcare management with our innovative features.
             </p>
           </div>
 
@@ -119,17 +132,17 @@ export default function Dashboard() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`group relative bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer ${
+                onMouseEnter={() => setActiveFeature(index)}
+                className={`group relative bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer ${
                   activeFeature === index ? 'ring-2 ring-teal-500 scale-105' : ''
                 }`}
-                onMouseEnter={() => setActiveFeature(index)}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-cyan-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative">
                   <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <feature.icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">{feature.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                 </div>
               </div>
