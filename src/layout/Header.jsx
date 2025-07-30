@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserCircle, LogOut } from "lucide-react";
 import logo from "../assets/logo/medilogo.png";
+import { AuthContext } from "../auth/AuthProvider";
+import { toast } from "react-toastify";
+
 
 export function Header({ onProfileClick }) {
+  const { isAuthenticated, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-  }, []);
 
   const handleProfileClick = () => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       navigate("/profile");
     } else {
       onProfileClick(); // Opens Auth Modal
@@ -21,10 +19,11 @@ export function Header({ onProfileClick }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    toast.info("You have successfully logged out");
+    logout();
+     setTimeout(() => {
     navigate("/");
-    window.location.reload(); // Optional to refresh app state
+  }, 500);
   };
 
   return (
@@ -50,7 +49,7 @@ export function Header({ onProfileClick }) {
         />
 
         {/* Logout Icon (only if logged in) */}
-        {isLoggedIn && (
+        {isAuthenticated && (
           <LogOut
             className="w-7 h-7 text-teal-500 cursor-pointer hover:text-teal-700"
             onClick={handleLogout}
@@ -59,4 +58,4 @@ export function Header({ onProfileClick }) {
       </div>
     </header>
   );
-}  
+}

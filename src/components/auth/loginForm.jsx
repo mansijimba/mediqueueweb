@@ -2,11 +2,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { AuthContext } from "../../auth/AuthProvider";  // Import AuthContext
 
 const LoginForm = ({ switchToRegister, onSuccess }) => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);  // Get login function from context
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,10 +36,10 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
           const adminUser = { email: adminEmail, role: "admin", name: "Admin" };
           const fakeToken = "fake-admin-token";
 
-          localStorage.setItem("token", fakeToken);
-          localStorage.setItem("user", JSON.stringify(adminUser));
+          // Use context login function instead of localStorage directly
+          login(adminUser, fakeToken);
 
-          if (onSuccess) onSuccess();  // ✅ Close modal before navigating
+          if (onSuccess) onSuccess();
           navigate("/admin");
           return;
         }
@@ -50,16 +52,16 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
         const response = await axios.post(endpoint, values);
 
         if (response.data?.token && response.data?.user) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
+          // Use context login function
+          login(response.data.user, response.data.token);
 
-          if (onSuccess) onSuccess();  // ✅ Close modal before navigating
+          if (onSuccess) onSuccess();
 
           const role = response.data.user.role;
           if (role === "admin") {
             navigate("/admin");
           } else {
-            navigate("/homepage");
+            navigate("/");
           }
         } else {
           setApiError(response.data.message || "Login failed");
@@ -114,7 +116,11 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-5 transform -translate-y-1/2 text-gray-400 hover:text-gray-700"
           >
-            {showPassword ? <Eye className="h-3 w-4" /> : <EyeOff className="h-3 w-4" />}
+            {showPassword ? (
+              <Eye className="h-3 w-4" />
+            ) : (
+              <EyeOff className="h-3 w-4" />
+            )}
           </button>
 
           <NavLink
