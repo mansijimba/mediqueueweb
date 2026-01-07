@@ -14,40 +14,38 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [appointments, setAppointments] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user || !user._id) {
-        console.error("User not found in context!");
-        setLoading(false);
-        return;
-      }
+useEffect(() => {
+  const fetchData = async () => {
+    if (!user?._id) {
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const authToken = localStorage.getItem("token");
-        if (!authToken) {
-          console.error("No token found!");
-          setLoading(false);
-          return;
-        }
+    try {
+      const authToken = localStorage.getItem("token");
 
-        const profileRes = await axios.get("http://localhost:5050/api/auth/profile", {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-        setProfile(profileRes.data);
+      const profileRes = await axios.get(
+        "http://localhost:5050/api/auth/profile",
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
 
-        const appointmentsRes = await axios.get(
-          `http://localhost:5050/api/appointment?patientId=${user._id}`
-        );
-        setAppointments(appointmentsRes.data.appointments);
-      } catch (error) {
-        console.error("Error fetching profile or appointments:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setProfile(profileRes.data.user); // ✅ FIX
 
-    fetchData();
-  }, [user]);
+      const appointmentsRes = await axios.get(
+        `http://localhost:5050/api/appointment?patientId=${user._id}`
+      );
+
+      setAppointments(appointmentsRes.data.appointments);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [user?._id]);
+
 
   const handleViewQueue = (appointmentId) => {
     // You can customize this if needed — for now, just navigate to /queue
