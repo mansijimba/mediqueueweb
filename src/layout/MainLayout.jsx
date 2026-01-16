@@ -20,6 +20,7 @@ export default function MainLayout() {
       <AuthModal
         show={showModal}
         onClose={() => setShowModal(false)}
+         onLoginSuccess={() => setShowModal(false)}
         // isLogin={isLogin}
         // toggleForm={() => setIsLogin(!isLogin)}
       />

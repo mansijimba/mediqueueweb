@@ -9,89 +9,104 @@ import { useNavigate } from "react-router-dom";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [appointments, setAppointments] = useState([]);
 
-useEffect(() => {
-  const fetchData = async () => {
-    if (!user?._id) {
-      setLoading(false);
-      return;
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user?._id) {
+        setLoading(false);
+        return;
+      }
 
-    try {
-      const authToken = localStorage.getItem("token");
+      try {
+        // ✅ COOKIE-BASED AUTH (NO TOKEN)
+        const profileRes = await axios.get(
+          "http://localhost:5050/api/auth/profile",
+          { withCredentials: true }
+        );
 
-      const profileRes = await axios.get(
-        "http://localhost:5050/api/auth/profile",
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
+        setProfile(profileRes.data.user);
 
-      setProfile(profileRes.data.user); // ✅ FIX
+        const appointmentsRes = await axios.get(
+          `http://localhost:5050/api/appointment?patientId=${user._id}`,
+          { withCredentials: true }
+        );
 
-      const appointmentsRes = await axios.get(
-        `http://localhost:5050/api/appointment?patientId=${user._id}`
-      );
+        setAppointments(appointmentsRes.data.appointments);
+      } catch (err) {
+        console.error("Profile fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setAppointments(appointmentsRes.data.appointments);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchData();
+  }, [user?._id]);
 
-  fetchData();
-}, [user?._id]);
-
-
-  const handleViewQueue = (appointmentId) => {
-    // You can customize this if needed — for now, just navigate to /queue
+  const handleViewQueue = () => {
     navigate("/queue");
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-teal-100 to-teal-300">
-        <div className="text-teal-900 text-lg font-semibold animate-pulse">Loading...</div>
+        <div className="text-teal-900 text-lg font-semibold animate-pulse">
+          Loading...
+        </div>
       </div>
     );
+  }
 
-  if (!profile)
+  if (!profile) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-red-100 to-red-300">
-        <div className="text-red-700 text-lg font-semibold">No profile data found.</div>
+        <div className="text-red-700 text-lg font-semibold">
+          No profile data found.
+        </div>
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-teal-100 py-12 px-6 md:px-16">
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="bg-white shadow-lg rounded-lg p-8 border border-teal-200">
-          <h1 className="text-3xl font-bold text-teal-900 mb-4">Your Profile</h1>
+          <h1 className="text-3xl font-bold text-teal-900 mb-4">
+            Your Profile
+          </h1>
+
           {isEditing ? (
             <ProfileEdit
               profile={profile}
               setProfile={setProfile}
-              authToken={localStorage.getItem("token")}
               setIsEditing={setIsEditing}
             />
           ) : (
-            <ProfileView profile={profile} onEdit={() => setIsEditing(true)} />
+            <ProfileView
+              profile={profile}
+              onEdit={() => setIsEditing(true)}
+            />
           )}
         </div>
 
         <div className="bg-white shadow-lg rounded-lg p-8 border border-teal-200">
-          <h2 className="text-2xl font-semibold text-teal-900 mb-6">Appointment History</h2>
+          <h2 className="text-2xl font-semibold text-teal-900 mb-6">
+            Appointment History
+          </h2>
+
           {appointments.length > 0 ? (
             <AppointmentHistory
               appointments={appointments}
-              onViewQueue={handleViewQueue}  // pass handler here
+              onViewQueue={handleViewQueue}
             />
           ) : (
-            <p className="text-gray-500 italic">No appointments found.</p>
+            <p className="text-gray-500 italic">
+              No appointments found.
+            </p>
           )}
         </div>
       </div>
