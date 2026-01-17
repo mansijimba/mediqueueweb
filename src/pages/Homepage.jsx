@@ -38,15 +38,15 @@ export default function Homepage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-100">
 
       {/* Hero Section */}
-      <section className="pt-12 px-4 bg-gradient-to-tl from-slate-50 via-white to-teal-100 w-full">
+      <section className="pt-12 px-4 bg-gradient-to-tl from-slate-50 via-white to-purple-100 w-full">
         <div className="w-full flex flex-col md:flex-row items-center gap-8 px-4 md:px-12">
 
           {/* Text */}
           <div className="w-full md:w-1/2 space-y-4 text-center md:text-left">
-            <h1 className="text-3xl md:text-4xl font-pacifico text-teal-600 leading-snug">
+            <h1 className="text-3xl md:text-4xl font-pacifico text-purple-600 leading-snug">
               Simplify Healthcare Visits
               <br />
               with MediQueuess
@@ -74,28 +74,28 @@ export default function Homepage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <MapPin className="mx-auto text-teal-500 w-10 h-10 mb-4" />
+              <MapPin className="mx-auto text-purple-500 w-10 h-10 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Visit the Website</h3>
               <p className="text-sm text-gray-600">
                 Start by going to our MediQueue website to access the clinic services.
               </p>
             </div>
             <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <CalendarCheck className="mx-auto text-teal-500 w-10 h-10 mb-4" />
+              <CalendarCheck className="mx-auto text-purple-500 w-10 h-10 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Select Details</h3>
               <p className="text-sm text-gray-600">
                 Choose the location, date, time, and healthcare provider for your appointment.
               </p>
             </div>
             <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <Clock className="mx-auto text-teal-500 w-10 h-10 mb-4" />
+              <Clock className="mx-auto text-purple-500 w-10 h-10 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Check Queue Status</h3>
               <p className="text-sm text-gray-600">
                 Track your spot in the queue live from our virtual system.
               </p>
             </div>
             <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <CheckCircle className="mx-auto text-teal-500 w-10 h-10 mb-4" />
+              <CheckCircle className="mx-auto text-purple-500 w-10 h-10 mb-4" />
               <h3 className="text-lg font-semibold mb-2">Attend the Appointment</h3>
               <p className="text-sm text-gray-600">
                 Visit the healthcare facility at your scheduled time.
@@ -106,7 +106,7 @@ export default function Homepage() {
       </section>
 
       {/* Why Choose Section */}
-      <section className="bg-gradient-to-tr from-slate-50 via-white to-teal-100">
+      <section className="bg-gradient-to-tr from-slate-50 via-white to-purple-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Why Choose MediQueue?</h2>
@@ -120,13 +120,13 @@ export default function Homepage() {
               <div
                 key={index}
                 className={`group relative bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer ${
-                  activeFeature === index ? 'ring-2 ring-teal-500 scale-105' : ''
+                  activeFeature === index ? 'ring-2 ring-purple-500 scale-105' : ''
                 }`}
                 onMouseEnter={() => setActiveFeature(index)}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-cyan-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-300/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative">
-                  <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-300 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <feature.icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>

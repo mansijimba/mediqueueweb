@@ -38,20 +38,29 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-100 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-100 relative overflow-hidden">
 
       {/* Floating Blobs */}
-      <div className="absolute -top-24 -left-24 w-72 h-72 bg-teal-200 rounded-full opacity-20 blur-3xl animate-pulse z-0" />
-      <div className="absolute top-1/3 right-0 w-72 h-72 bg-cyan-200 rounded-full opacity-20 blur-3xl animate-pulse z-0" />
+      <div className="absolute -top-24 -left-24 w-72 h-72 bg-purple-200 rounded-full opacity-20 blur-3xl animate-pulse z-0" />
+      <div className="absolute top-1/3 right-0 w-72 h-72 bg-purple-300 rounded-full opacity-20 blur-3xl animate-pulse z-0" />
 
       {/* Hero Section */}
       <section className="pt-20 px-4 relative z-10">
         <div className="w-full flex flex-col md:flex-row items-center gap-12 px-4 md:px-12">
 
-          {/* Text */}
-          <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
+          {/* Image on the Left */}
+          <div className="w-full md:w-3/5 order-1 md:order-1">
+            <img
+              src={Image}
+              alt="Doctor"
+              className="w-full h-[450px] object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+
+          {/* Text on the Right */}
+          <div className="w-full md:w-1/2 space-y-6 text-center md:text-left order-2 md:order-2">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
-              <span className="bg-gradient-to-r from-teal-500 to-cyan-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-500 to-purple-300 bg-clip-text text-transparent">
                 Simplify Healthcare Visits
               </span>
               <br />
@@ -59,17 +68,16 @@ export default function Dashboard() {
             </h1>
             <p className="text-gray-700 text-lg md:text-xl max-w-md">
               MediQueue is a smart queue and appointment management app designed to connect
-              patients with healthcare providers more efficiently.
+              patients with healthcare providers more efficiently. Experience seamless scheduling and live queue tracking.
             </p>
-          </div>
-
-          {/* Image */}
-          <div className="w-full md:w-3/5">
-            <img
-              src={Image}
-              alt="Doctor"
-              className="w-full h-[450px] object-contain drop-shadow-lg"
-            />
+            <div className="flex justify-center md:justify-start gap-4 mt-4">
+              <button className="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-purple-700 transition-all duration-300">
+                Get Started
+              </button>
+              <button className="border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg hover:bg-purple-600 hover:text-white transition-all duration-300">
+                Learn More
+              </button>
+            </div>
           </div>
 
         </div>
@@ -79,8 +87,7 @@ export default function Dashboard() {
       <section className="bg-white py-20 relative z-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {[
-              {
+            {[{
                 icon: MapPin,
                 title: "Visit the Website",
                 desc: "Start by going to our MediQueue website to access the clinic services.",
@@ -99,13 +106,12 @@ export default function Dashboard() {
                 icon: CheckCircle,
                 title: "Attend the Appointment",
                 desc: "Visit the healthcare facility at your scheduled time.",
-              },
-            ].map((step, idx) => (
+              }].map((step, idx) => (
               <div
                 key={idx}
                 className="bg-gray-50 p-8 rounded-xl shadow hover:shadow-xl transition-all duration-300"
               >
-                <step.icon className="mx-auto text-teal-600 w-12 h-12 mb-4" />
+                <step.icon className="mx-auto text-purple-600 w-12 h-12 mb-4" />
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">{step.title}</h3>
                 <p className="text-sm text-gray-600">{step.desc}</p>
               </div>
@@ -115,11 +121,11 @@ export default function Dashboard() {
       </section>
 
       {/* Why Choose Section */}
-      <section className="bg-gradient-to-tr from-slate-50 via-white to-teal-100 py-20 relative z-10">
+      <section className="bg-gradient-to-tr from-slate-50 via-white to-purple-100 py-20 relative z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              <span className="bg-gradient-to-r from-teal-500 to-cyan-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-500 to-purple-300 bg-clip-text text-transparent">
                 Why Choose MediQueue?
               </span>
             </h2>
@@ -134,12 +140,12 @@ export default function Dashboard() {
                 key={index}
                 onMouseEnter={() => setActiveFeature(index)}
                 className={`group relative bg-white/60 backdrop-blur-md rounded-2xl p-8 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer ${
-                  activeFeature === index ? 'ring-2 ring-teal-500 scale-105' : ''
+                  activeFeature === index ? 'ring-2 ring-purple-500 scale-105' : ''
                 }`}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-200 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative">
-                  <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-300 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <feature.icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-800 mb-4">{feature.title}</h3>
