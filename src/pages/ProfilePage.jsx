@@ -14,6 +14,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [csrfToken, setCsrfToken] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,19 +24,30 @@ const ProfilePage = () => {
       }
 
       try {
-        // ✅ COOKIE-BASED AUTH (NO TOKEN)
+        // 1️⃣ Get CSRF token first
+        const csrfRes = await axios.get(
+          "http://localhost:5050/api/auth/csrf-token",
+          { withCredentials: true } // send cookies
+        );
+        setCsrfToken(csrfRes.data.csrfToken);
+
+        // 2️⃣ Fetch profile with CSRF header
         const profileRes = await axios.get(
           "http://localhost:5050/api/auth/profile",
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            headers: {
+              "X-CSRF-Token": csrfRes.data.csrfToken,
+            },
+          }
         );
-
         setProfile(profileRes.data.user);
 
+        // 3️⃣ Fetch appointments
         const appointmentsRes = await axios.get(
           `http://localhost:5050/api/appointment?patientId=${user._id}`,
           { withCredentials: true }
         );
-
         setAppointments(appointmentsRes.data.appointments);
       } catch (err) {
         console.error("Profile fetch error:", err);
@@ -51,30 +63,13 @@ const ProfilePage = () => {
     navigate("/queue");
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-teal-100 to-teal-300">
-        <div className="text-teal-900 text-lg font-semibold animate-pulse">
-          Loading...
-        </div>
-      </div>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-red-100 to-red-300">
-        <div className="text-red-700 text-lg font-semibold">
-          No profile data found.
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!profile) return <div>No profile data found.</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-teal-100 py-12 px-6 md:px-16">
       <div className="max-w-5xl mx-auto space-y-10">
-        <div className="bg-white shadow-lg rounded-lg p-8 border border-teal-200">
+        <div className="bg-white shadow-lg rounded-lg p-8">
           <h1 className="text-3xl font-bold text-teal-900 mb-4">
             Your Profile
           </h1>
@@ -84,6 +79,7 @@ const ProfilePage = () => {
               profile={profile}
               setProfile={setProfile}
               setIsEditing={setIsEditing}
+              csrfToken={csrfToken} // ✅ pass CSRF token
             />
           ) : (
             <ProfileView
@@ -93,7 +89,7 @@ const ProfilePage = () => {
           )}
         </div>
 
-        <div className="bg-white shadow-lg rounded-lg p-8 border border-teal-200">
+        <div className="bg-white shadow-lg rounded-lg p-8">
           <h2 className="text-2xl font-semibold text-teal-900 mb-6">
             Appointment History
           </h2>
@@ -104,9 +100,7 @@ const ProfilePage = () => {
               onViewQueue={handleViewQueue}
             />
           ) : (
-            <p className="text-gray-500 italic">
-              No appointments found.
-            </p>
+            <p className="text-gray-500 italic">No appointments found.</p>
           )}
         </div>
       </div>

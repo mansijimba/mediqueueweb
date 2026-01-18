@@ -11,15 +11,14 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const [role, setRole] = useState("user"); 
+  const [role, setRole] = useState("user");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
 
-  const [securityRequired, setSecurityRequired] = useState(false);
-  const [securityQuestions, setSecurityQuestions] = useState([]);
-  const [securityAnswers, setSecurityAnswers] = useState({});
-  const [tempToken, setTempToken] = useState(null);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [tempUserId, setTempUserId] = useState(null);
 
   const [accountLocked, setAccountLocked] = useState(false);
   const [unlockSubmitting, setUnlockSubmitting] = useState(false);
@@ -27,7 +26,7 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
 
   const API_ENDPOINTS = {
     user: "http://localhost:5050/api/auth",
-    admin: "http://localhost:5050/api/admins"
+    admin: "http://localhost:5050/api/admins",
   };
 
   const formik = useFormik({
@@ -44,62 +43,69 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
       try {
         const API_ENDPOINT = API_ENDPOINTS[role];
 
-        // ---------------- SECURITY QUESTION VERIFICATION ----------------
-        if (securityRequired && tempToken) {
-          const answers = securityQuestions.map((q) => ({
-            question: q.question,
-            answer: securityAnswers[q.question] || "",
-          }));
+        if (role === "user") {
+          // ================= USER LOGIN (OTP flow) =================
+          if (!otpSent) {
+            const { data } = await axios.post(
+              `${API_ENDPOINT}/login`,
+              { email: values.email, password: values.password },
+              { withCredentials: true }
+            );
 
+            if (data?.tempUserId) {
+              setTempUserId(data.tempUserId);
+              setOtpSent(true);
+              toast.info("OTP sent to your email. Check your inbox.");
+            }
+
+            if (data?.locked) {
+              setAccountLocked(true);
+              setApiError("Account locked. Request unlock link below.");
+              return;
+            }
+          } else {
+            // Verify OTP
+            if (!otp) {
+              toast.warn("Enter the OTP sent to your email.");
+              return;
+            }
+
+            const { data } = await axios.post(
+              `${API_ENDPOINT}/verify-otp`,
+              { userId: tempUserId, otp },
+              { withCredentials: true }
+            );
+
+            if (!data?.user) throw new Error(data?.message || "OTP verification failed");
+
+            login(data.user);
+            toast.success("Login successful!");
+            onSuccess?.();
+            navigate("/homepage");
+          }
+
+        } else if (role === "admin") {
+          // ================= ADMIN LOGIN (direct, no OTP) =================
           const { data } = await axios.post(
-            `${API_ENDPOINT}/security/verify`,
-            { email: values.email, tempToken, answers },
+            `${API_ENDPOINT}/login`, // Make sure your backend allows direct login for admins
+            { email: values.email, password: values.password },
             { withCredentials: true }
           );
 
-          if (!data?.token || !data?.user) {
-            throw new Error(data?.message || "Security verification failed");
-          }
+          if (!data?.user) throw new Error(data?.message || "Login failed");
 
-          login(data.user, data.token);
-          toast.success("Login successful");
+          login(data.user);
+          toast.success("Admin login successful!");
           onSuccess?.();
-
-          navigate(data.user.role === "admin" ? "/admin" : "/homepage");
-          return;
+          navigate("/admin");
         }
-
-        // ---------------- NORMAL LOGIN ----------------
-        const { data } = await axios.post(
-          `${API_ENDPOINT}/login`,
-          values,
-          { withCredentials: true } // crucial for cookies
-        );
-
-        if (data?.securityRequired) {
-          setSecurityRequired(true);
-          setSecurityQuestions(data.questions || []);
-          setTempToken(data.tempToken);
-          setApiError("Please answer your security questions.");
-          return;
-        }
-
-        if (!data?.user) {
-          throw new Error(data?.message || "Login failed");
-        }
-
-        login(data.user, data.token);
-        toast.success("Login successful");
-        onSuccess?.();
-        navigate(data.user.role === "admin" ? "/admin" : "/homepage");
-
       } catch (err) {
         const msg = err.response?.data?.message || err.message || "Login failed";
 
         if (/locked/i.test(msg)) {
           setAccountLocked(true);
           setApiError("Your account is locked. Request an unlock link below.");
-          toast.error("Account locked");
+          toast.error(msg);
         } else {
           setApiError(msg);
           toast.error(msg);
@@ -107,7 +113,8 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
       } finally {
         setIsSubmitting(false);
       }
-    },
+    }
+
   });
 
   const handleRequestUnlock = async () => {
@@ -175,7 +182,7 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
           />
         </div>
 
-        {!securityRequired && (
+        {!otpSent && (
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -195,21 +202,15 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
           </div>
         )}
 
-        {securityRequired && (
-          <div className="bg-blue-50 p-3 rounded border border-blue-200">
-            <h3 className="text-sm font-semibold mb-2">Security Questions</h3>
-            {securityQuestions.map((q, idx) => (
-              <input
-                key={idx}
-                type="text"
-                placeholder={q.question}
-                className="w-full border rounded-md p-2 text-sm mb-2"
-                value={securityAnswers[q.question] || ""}
-                onChange={(e) =>
-                  setSecurityAnswers({ ...securityAnswers, [q.question]: e.target.value })
-                }
-              />
-            ))}
+        {otpSent && (
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              className="w-full border rounded-md p-2 text-sm"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
           </div>
         )}
 
@@ -239,7 +240,7 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
           disabled={isSubmitting}
           className="w-full bg-teal-700 text-white py-2 rounded-md font-semibold disabled:bg-gray-300"
         >
-          {securityRequired ? "Verify Answers" : "Log In"}
+          {otpSent ? "Verify OTP" : "Log In"}
         </button>
       </form>
 
