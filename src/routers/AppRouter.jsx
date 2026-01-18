@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "../pages/Login";
+import PrivateRoute from "./privateRouter";
 import RegisterForm from "../components/auth/registerForm";
 import Dashboard from "../pages/Dashboard";
 import MainLayout from "../layout/MainLayout";
@@ -55,6 +56,7 @@ export default function AppRouter() {
           </Route>
 
           {/* Admin Routes */}
+          <Route element={<PrivateRoute />}>  
           <Route path="/admin" element={<AdminPage />}>
             <Route index element={<div>Welcome to Admin Dashboard</div>} />
             <Route path="appointments" element={<AppointmentTable />} />
@@ -63,6 +65,7 @@ export default function AppRouter() {
             <Route path="doctors/addDoctor" element={<AddDoctor />} />
             <Route path="patients" element={<PatientsPage />} />
             <Route path="messages" element={<Message />} />
+          </Route>
           </Route>
         </Routes>
       </BrowserRouter>
