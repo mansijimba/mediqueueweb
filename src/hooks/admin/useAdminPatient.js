@@ -9,7 +9,7 @@ export function useAdminPatients() {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const res = await axios.get("http://localhost:5050/api/admin/patients");
+        const res = await axios.get("http://localhost:5050/api/admin/patients",{ withCredentials: true });
         console.log("Fetched patients:", res.data.patients); // Should be array of users
         setPatients(res.data.patients);
         setIsPending(false);

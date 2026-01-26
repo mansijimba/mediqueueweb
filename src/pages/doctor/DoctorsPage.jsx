@@ -1,32 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const DoctorsPage = () => {
   const [doctors, setDoctors] = useState([]);
-  const [snackbar, setSnackbar] = useState('');
+  const [snackbar, setSnackbar] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await axios.get('http://localhost:5050/api/doctor');
+        const res = await axios.get("http://localhost:5050/api/doctor");
         setDoctors(res.data.data || []);
       } catch (error) {
-        console.error('Error fetching doctors:', error);
+        console.error("Error fetching doctors:", error);
+        setSnackbar("Failed to load doctors");
+        setTimeout(() => setSnackbar(""), 3000);
       }
     };
     fetchDoctors();
   }, []);
 
-  const handleBookAppointment = (id) => {
-    const token = localStorage.getItem('token'); // or however you store auth
-    if (!token) {
-      setSnackbar('You must be logged in to book an appointment.');
-      setTimeout(() => setSnackbar(''), 3000);
-      return;
-    }
-    navigate(`/doctor/book/${id}`);
+  const handleBookAppointment = (doctor) => {
+    navigate(`/doctor/book/${doctor._id}`);
   };
 
   return (
@@ -44,8 +40,8 @@ const DoctorsPage = () => {
             <img
               src={
                 doc.filepath
-                  ? `http://localhost:5050/${doc.filepath.replace(/\\/g, '/')}`
-                  : 'https://via.placeholder.com/300x200'
+                  ? `http://localhost:5050/${doc.filepath.replace(/\\/g, "/")}`
+                  : "https://via.placeholder.com/300x200"
               }
               alt={doc.name}
               className="w-full h-52 object-cover rounded-lg mb-4"
@@ -53,10 +49,10 @@ const DoctorsPage = () => {
             <h3 className="text-2xl font-bold text-gray-800">{doc.name}</h3>
             <p className="text-teal-600 font-medium">{doc.specialty}</p>
             <p className="text-sm text-gray-600 mt-1">
-              Availability: {doc.availability || 'N/A'}
+              Availability: {doc.availability || "N/A"}
             </p>
             <button
-              onClick={() => handleBookAppointment(doc._id)}
+              onClick={() => handleBookAppointment(doc)}
               className="mt-4 w-full px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700"
             >
               Book Appointment

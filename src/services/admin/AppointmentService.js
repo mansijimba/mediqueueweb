@@ -1,24 +1,23 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5050/api/admin/appointments"; // fixed URL
+const BASE_URL = "http://localhost:5050/api/admin/appointments";
 
-const getAuthHeader = () => ({
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-});
-
+// GET all appointments
 export const getAllAppointmentsService = () =>
-  axios.get(BASE_URL, getAuthHeader());
+  axios.get(BASE_URL, { withCredentials: true });
 
+// GET one appointment
 export const getOneAppointmentService = (id) =>
-  axios.get(`${BASE_URL}/${id}`, getAuthHeader());
+  axios.get(`${BASE_URL}/${id}`, { withCredentials: true });
 
+// CREATE appointment
 export const createAppointmentService = (data) =>
-  axios.post(BASE_URL, data, getAuthHeader());
+  axios.post(BASE_URL, data, { withCredentials: true });
 
+// UPDATE appointment
 export const updateAppointmentService = (id, data) =>
-  axios.put(`${BASE_URL}/${id}`, data, getAuthHeader());
+  axios.put(`${BASE_URL}/${id}`, data, { withCredentials: true });
 
+// DELETE appointment
 export const deleteAppointmentService = (id) =>
-  axios.delete(`${BASE_URL}/${id}`, getAuthHeader());
+  axios.delete(`${BASE_URL}/${id}`, { withCredentials: true });

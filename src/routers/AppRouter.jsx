@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import Login from "../pages/Login";
-import PrivateRoute from "./privateRouter";
 import RegisterForm from "../components/auth/registerForm";
 import Dashboard from "../pages/Dashboard";
 import MainLayout from "../layout/MainLayout";
@@ -10,26 +10,27 @@ import UserDoctor from "../pages/doctor/DoctorsPage";
 import BookAppointmentPage from "../pages/doctor/BookAppoitmentPage";
 import Profile from "../pages/ProfilePage";
 import Queue from "../pages/QueueStatusPage";
+import Homepage from "../pages/Homepage";
+import AboutUs from "../pages/AboutUs";
 
 // Admin pages
 import AdminPage from "../pages/admin/AdminPage";
 import PatientsPage from "../pages/admin/Patients";
 import AppointmentTable from "../components/admin/AppointmentTable";
 import QueueTable from "../components/admin/QueueTable";
-import Homepage from "../pages/Homepage";
 import AddDoctor from "../pages/admin/AddDoctor";
 import Doctors from "../pages/admin/Doctors";
-import AboutUs from "../pages/AboutUs";
 import Message from "../pages/admin/MessagePage";
 
-import AuthModal from "../components/authModal";  // Assuming you have this modal component
+import AuthModal from "../components/authModal";
+import AdminProtectedRoute from "../routers/AdminProtectedRoute"; // <-- import your protected route
 
+import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentFailure from "../pages/PaymentFailure";
 export default function AppRouter() {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Function to open login modal
   const openAuthModal = () => setShowAuthModal(true);
-  // Function to close login modal
   const closeAuthModal = () => setShowAuthModal(false);
 
   return (
@@ -38,12 +39,9 @@ export default function AppRouter() {
         {/* Render AuthModal conditionally */}
         {showAuthModal && <AuthModal onClose={closeAuthModal} />}
 
-        {/* Pass onProfileClick to MainLayout (which should pass it down to Header) */}
         <Routes>
           {/* Public Routes */}
-          <Route
-            element={<MainLayout onProfileClick={openAuthModal} />}
-          >
+          <Route element={<MainLayout onProfileClick={openAuthModal} />}>
             <Route path="/login" element={<Login />} />
             <Route path="/registerForm" element={<RegisterForm />} />
             <Route path="/" element={<Dashboard />} />
@@ -53,11 +51,19 @@ export default function AppRouter() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/queue" element={<Queue />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-failure" element={<PaymentFailure />} />
           </Route>
 
-          {/* Admin Routes */}
-          <Route element={<PrivateRoute />}>  
-          <Route path="/admin" element={<AdminPage />}>
+          {/* Admin Routes (Protected) */}
+          <Route
+            path="/admin"
+            element={
+              <AdminProtectedRoute>
+                <AdminPage />
+              </AdminProtectedRoute>
+            }
+          >
             <Route index element={<div>Welcome to Admin Dashboard</div>} />
             <Route path="appointments" element={<AppointmentTable />} />
             <Route path="queues" element={<QueueTable />} />
@@ -65,7 +71,6 @@ export default function AppRouter() {
             <Route path="doctors/addDoctor" element={<AddDoctor />} />
             <Route path="patients" element={<PatientsPage />} />
             <Route path="messages" element={<Message />} />
-          </Route>
           </Route>
         </Routes>
       </BrowserRouter>

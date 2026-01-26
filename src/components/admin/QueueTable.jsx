@@ -18,7 +18,7 @@ export default function QueueTable() {
   const fetchQueues = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5050/api/admin/queues");
+      const res = await axios.get("http://localhost:5050/api/admin/queues",{ withCredentials: true });
       if (res.data.success) {
         setQueues(res.data.data);
         setError(null);

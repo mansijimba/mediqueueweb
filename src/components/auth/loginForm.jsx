@@ -44,7 +44,6 @@ const LoginForm = ({ switchToRegister, onSuccess }) => {
         const API_ENDPOINT = API_ENDPOINTS[role];
 
         if (role === "user") {
-          // ================= USER LOGIN (OTP flow) =================
           if (!otpSent) {
             const { data } = await axios.post(
               `${API_ENDPOINT}/login`,

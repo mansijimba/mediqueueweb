@@ -9,7 +9,8 @@ const AdminMessagesPage = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get("http://localhost:5050/api/admin/messages");
+        const res = await axios.get("http://localhost:5050/api/admin/messages",{ withCredentials: true }
+        );
         if (res.data.success) {
           setMessages(res.data.data);
           setError(null);
