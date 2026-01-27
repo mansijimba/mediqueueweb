@@ -1,13 +1,3 @@
-/**
- * Validate password complexity
- * Rules:
- * - Minimum length
- * - Lowercase
- * - Uppercase
- * - Digit
- * - Symbol
- * - Requires N out of M categories
- */
 export const validatePasswordComplexity = (
   password = "",
   options = { minLength: 8, requireCategories: 3 }
@@ -39,10 +29,6 @@ export const validatePasswordComplexity = (
   };
 };
 
-/**
- * Score password strength (0–4)
- * Used for progress bar & label
- */
 export const scorePassword = (password = "") => {
   if (!password) {
     return { score: 0, label: "Very weak" };

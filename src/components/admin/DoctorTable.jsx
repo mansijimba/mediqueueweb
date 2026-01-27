@@ -61,9 +61,9 @@ export default function DoctorTable() {
   return (
     <div className="p-6 bg-white rounded-2xl shadow-lg">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-teal-700">Doctor List</h2>
+        <h2 className="text-2xl font-bold text-purple-700">Doctor List</h2>
         <Link to="addDoctor">
-          <button className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow hover:scale-105 transition">
+          <button className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-xl shadow hover:scale-105 transition">
             + Add Doctor
           </button>
         </Link>

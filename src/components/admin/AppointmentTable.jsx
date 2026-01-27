@@ -78,7 +78,7 @@ export default function AppointmentTable() {
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-gray-700">
           <thead>
-            <tr className="bg-gradient-to-r from-teal-500 to-teal-600 text-white">
+            <tr className="bg-gradient-to-r from-teal-500 to-purple-600 text-white">
               <th className="px-4 py-3 text-center">Patient</th>
               <th className="px-4 py-3 text-center">Doctor</th>
               <th className="px-4 py-3 text-center">Specialty</th>

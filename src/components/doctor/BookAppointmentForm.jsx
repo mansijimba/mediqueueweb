@@ -171,10 +171,10 @@ export default function BookAppointmentForm({ doctor }) {
           </div>
 
           {/* ============ APPOINTMENT FEE DISPLAY (ADDED FOR ESEWA PAYMENT INTEGRATION) ============ */}
-          <div className="bg-teal-50 p-4 rounded border border-teal-200">
+          <div className="bg-purple-50 p-4 rounded border border-purple-200">
             <div className="flex justify-between items-center">
               <span className="font-semibold text-gray-700">Consultation Fee:</span>
-              <span className="text-lg font-bold text-teal-600">Rs. {appointmentFee}</span>
+              <span className="text-lg font-bold text-purple-600">Rs. {appointmentFee}</span>
             </div>
             <p className="text-sm text-gray-500 mt-2">Payment required via eSewa</p>
           </div>
@@ -183,7 +183,7 @@ export default function BookAppointmentForm({ doctor }) {
           {/* ============ PAY & CONFIRM BUTTON (MODIFIED FOR ESEWA PAYMENT INTEGRATION) ============ */}
           <button
             type="submit"
-            className="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             disabled={isProcessing}
           >
             {isProcessing ? 'Processing...' : 'Pay & Confirm'}

@@ -27,7 +27,7 @@ const DoctorsPage = () => {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      <h2 className="text-4xl font-extrabold text-center text-teal-800 mb-10">
+      <h2 className="text-4xl font-extrabold text-center text-purple-800 mb-10">
         Meet Our Doctors
       </h2>
 
@@ -47,13 +47,13 @@ const DoctorsPage = () => {
               className="w-full h-52 object-cover rounded-lg mb-4"
             />
             <h3 className="text-2xl font-bold text-gray-800">{doc.name}</h3>
-            <p className="text-teal-600 font-medium">{doc.specialty}</p>
+            <p className="text-purple-600 font-medium">{doc.specialty}</p>
             <p className="text-sm text-gray-600 mt-1">
               Availability: {doc.availability || "N/A"}
             </p>
             <button
               onClick={() => handleBookAppointment(doc)}
-              className="mt-4 w-full px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700"
+              className="mt-4 w-full px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700"
             >
               Book Appointment
             </button>

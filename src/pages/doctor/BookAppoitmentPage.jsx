@@ -38,9 +38,9 @@ export default function BookAppointmentPage() {
               : 'https://via.placeholder.com/150'
           }
           alt={doctor.name}
-          className="w-32 h-32 object-cover rounded-full border-4 border-teal-500 shadow-md mb-4"
+          className="w-32 h-32 object-cover rounded-full border-4 border-purple-500 shadow-md mb-4"
         />
-        <h1 className="text-2xl font-bold text-teal-700">Book Appointment with Dr. {doctor.name}</h1>
+        <h1 className="text-2xl font-bold text--700">Book Appointment with Dr. {doctor.name}</h1>
         <p className="text-gray-600">{doctor.specialty}</p>
         <p className="text-gray-500 text-sm mt-1">Availability: {doctor.availability || 'N/A'}</p>
       </div>

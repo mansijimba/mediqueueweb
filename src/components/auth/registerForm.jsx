@@ -117,15 +117,15 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
   }, [formik.values.password]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-blue-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 px-4">
       <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl border border-gray-200 p-10">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="mx-auto w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center shadow-lg">
+          <div className="mx-auto w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center shadow-lg">
             <Shield className="text-white w-8 h-8" />
           </div>
-          <h2 className="mt-4 text-3xl font-bold text-teal-700">
-            Create Your MediQueue Account
+          <h2 className="mt-4 text-3xl font-bold text-purple-700">
+            Create Your ClinicFlow Account
           </h2>
           <p className="text-gray-500 text-sm mt-2">
             Secure access to smarter healthcare
@@ -228,7 +228,7 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
             <button
               type="submit"
               disabled={!formik.isValid || formik.isSubmitting}
-              className="flex-1 py-3 rounded-lg bg-teal-700 text-white font-semibold hover:bg-teal-800 transition disabled:bg-gray-300"
+              className="flex-1 py-3 rounded-lg bg-purple-700 text-white font-semibold hover:bg-purple-800 transition disabled:bg-gray-300"
             >
               Create Account
             </button>
@@ -236,7 +236,7 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
             <button
               type="button"
               onClick={switchToLogin}
-              className="flex-1 py-3 rounded-lg border-2 border-teal-700 text-teal-700 hover:bg-teal-50 transition"
+              className="flex-1 py-3 rounded-lg border-2 border-purple-700 text-purple-700 hover:bg-purple-50 transition"
             >
               Back to Login
             </button>
@@ -263,7 +263,7 @@ const InputField = ({ name, placeholder, icon, formik }) => (
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
       value={formik.values[name]}
-      className="w-full rounded-lg border border-gray-300 px-10 py-2 text-sm focus:ring-2 focus:ring-teal-500"
+      className="w-full rounded-lg border border-gray-300 px-10 py-2 text-sm focus:ring-2 focus:ring-purple-500"
     />
     <div className="absolute left-3 top-2.5 text-gray-400">{icon}</div>
   </div>
@@ -284,16 +284,17 @@ const PasswordField = ({
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
       value={formik.values[name]}
-      className="w-full rounded-lg border border-gray-300 px-10 py-2 text-sm focus:ring-2 focus:ring-teal-500"
+      className="w-full rounded-lg border border-gray-300 px-10 py-2 text-sm focus:ring-2 focus:ring-purple-500"
     />
     <Lock className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
-    <button
-      type="button"
-      onClick={togglePassword}
-      className="absolute right-3 top-2.5 text-gray-400"
-    >
-      {showPassword ? <Eye /> : <EyeOff />}
-    </button>
+   <button
+  type="button"
+  onClick={togglePassword}
+  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1"
+>
+  {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+</button>
+
   </div>
 );
 
@@ -301,12 +302,12 @@ const PasswordStrength = ({ pwScore, pwLabel, pwDetails }) => (
   <div className="mt-4 bg-gray-50 p-4 rounded-lg border">
     <div className="flex justify-between text-xs font-semibold">
       <span>Password Strength</span>
-      <span className="text-teal-700">{pwLabel}</span>
+      <span className="text-purple-700">{pwLabel}</span>
     </div>
 
     <div className="mt-2 h-2 bg-gray-300 rounded-full overflow-hidden">
       <div
-        className="h-full bg-teal-600 transition-all"
+        className="h-full bg-purple-600 transition-all"
         style={{ width: `${(pwScore / 4) * 100}%` }}
       />
     </div>
