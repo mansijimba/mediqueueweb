@@ -52,7 +52,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="hidden md:flex fixed flex-col w-64 bg-gradient-to-b from-cyan-500 to-teal-500 text-white shadow-xl min-h-screen rounded-tr-3xl rounded-br-3xl">
+    <div className="hidden md:flex fixed flex-col w-64 bg-gradient-to-b from-cyan-500 to-purple-500 text-white shadow-xl min-h-screen rounded-tr-3xl rounded-br-3xl">
       {/* Logo / Header */}
       <div className="p-6 border-b border-white/30 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-md">
@@ -149,7 +149,7 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-white/30 text-xs text-center text-white/70">
-        &copy; 2025 MediQueue
+        &copy; 2025 ClinicFlow
       </div>
     </div>
   );

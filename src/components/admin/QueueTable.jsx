@@ -141,7 +141,7 @@ export default function QueueTable() {
                 {filteredQueues.map((queue) => (
                   <tr
                     key={queue._id}
-                    className="odd:bg-white even:bg-gray-50 hover:bg-teal-50 transition-all duration-200"
+                    className="odd:bg-white even:bg-gray-50 hover:bg-purple-50 transition-all duration-200"
                   >
                     <td className="px-4 py-3 font-medium">{queue.queuePosition || "N/A"}</td>
                     <td className="px-4 py-3">{queue.patient?.fullName || queue.patient?.name || "N/A"}</td>
@@ -176,7 +176,7 @@ export default function QueueTable() {
                         <>
                           <button
                             onClick={handleSave}
-                            className="px-3 py-1 rounded bg-teal-600 hover:bg-teal-700 text-white text-xs shadow"
+                            className="px-3 py-1 rounded bg-purple-600 hover:bg-purple-700 text-white text-xs shadow"
                           >
                             Save
                           </button>
