@@ -18,8 +18,8 @@ export default function PatientsPage() {
     );
 
   return (
-    <div className="max-w-6xl mx-auto p-8 bg-gradient-to-r from-teal-50 to-white rounded-2xl shadow-xl border border-teal-200">
-      <h2 className="text-4xl font-extrabold text-teal-800 mb-12 text-center drop-shadow-md">
+    <div className="max-w-6xl mx-auto p-8 bg-gradient-to-r from-purple-50 to-white rounded-2xl shadow-xl border border-purple-200">
+      <h2 className="text-4xl font-extrabold text-purple-800 mb-12 text-center drop-shadow-md">
         Patients List
       </h2>
 
@@ -32,17 +32,17 @@ export default function PatientsPage() {
             >
               <div className="flex items-center space-x-4 mb-4">
                 <div className="flex-shrink-0">
-                  <div className="h-14 w-14 rounded-full bg-teal-200 flex items-center justify-center text-teal-700 font-bold text-xl uppercase">
+                  <div className="h-14 w-14 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold text-xl uppercase">
                     {p.fullName?.charAt(0) || "P"}
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900">{p.fullName}</h3>
               </div>
               <div className="text-gray-700 mb-2">
-                <span className="font-semibold text-teal-600">Email:</span> {p.email}
+                <span className="font-semibold text-purple-600">Email:</span> {p.email}
               </div>
               <div className="text-gray-700">
-                <span className="font-semibold text-teal-600">Phone:</span> {p.phone}
+                <span className="font-semibold text-purple-600">Phone:</span> {p.phone}
               </div>
             </div>
           ))}

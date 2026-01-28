@@ -59,9 +59,9 @@ export default function AddDoctor() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 p-4">
       <div className="bg-white bg-opacity-90 backdrop-blur-md shadow-2xl rounded-3xl w-full max-w-2xl p-8 transition-transform transform hover:scale-105">
-        <h2 className="text-4xl font-bold text-teal-700 text-center mb-8 tracking-wide">
+        <h2 className="text-4xl font-bold text-purple-700 text-center mb-8 tracking-wide">
           Add New Doctor
         </h2>
 
@@ -89,7 +89,7 @@ export default function AddDoctor() {
                 value={formData[field.name]}
                 onChange={handleChange}
                 min={field.min || undefined}
-                className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-400 transition-all shadow-inner"
+                className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-all shadow-inner"
               />
             </div>
           ))}
@@ -114,7 +114,7 @@ export default function AddDoctor() {
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-400 transition-all shadow-inner"
+              className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-400 transition-all shadow-inner"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function AddDoctor() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-6 py-2 rounded-xl hover:from-teal-700 hover:to-teal-800 shadow-lg transform hover:scale-105 transition-all"
+              className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-2 rounded-xl hover:from-purple-700 hover:to-purple-800 shadow-lg transform hover:scale-105 transition-all"
             >
               {loading ? "Adding..." : "Add Doctor"}
             </button>
