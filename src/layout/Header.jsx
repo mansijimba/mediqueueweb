@@ -40,7 +40,7 @@ export function Header({ onProfileClick }) {
       <div className="flex items-center gap-2">
         <img src={logo} alt="MediQueue Logo" className="w-12 h-10" />
         <span className="text-2xl font-semibold text-purple-600">
-          MediQueue
+          ClinicFlow
         </span>
       </div>
 
