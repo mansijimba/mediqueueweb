@@ -227,7 +227,7 @@ const RegisterForm = ({ onSuccess, switchToLogin }) => {
           <div className="flex gap-4 pt-4">
             <button
               type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}
+              disabled={formik.isSubmitting}
               className="flex-1 py-3 rounded-lg bg-purple-700 text-white font-semibold hover:bg-purple-800 transition disabled:bg-gray-300"
             >
               Create Account

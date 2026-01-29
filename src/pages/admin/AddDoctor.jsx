@@ -48,7 +48,12 @@ export default function AddDoctor() {
     });
 
     try {
-      await axios.post("http://localhost:5050/api/admin/doctors", data);
+      await axios.post("http://localhost:5050/api/admin/doctors", data, {
+  withCredentials: true,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+    });
       navigate("/admin/doctors");
     } catch (err) {
       setError("Failed to add doctor. Please check the form and try again.");

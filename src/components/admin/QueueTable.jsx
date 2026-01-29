@@ -42,7 +42,7 @@ export default function QueueTable() {
       setLoading(true);
       await axios.patch(`http://localhost:5050/api/admin/queues/${editId}`, {
         status: editedStatus,
-      });
+      }, { withCredentials: true });
       setEditId(null);
       setEditedStatus("");
       await fetchQueues();
@@ -62,7 +62,9 @@ export default function QueueTable() {
     if (!deleteId) return;
     try {
       setDeleting(true);
-      await axios.delete(`http://localhost:5050/api/admin/queues/${deleteId}`);
+      await axios.delete(`http://localhost:5050/api/admin/queues/${deleteId}`,
+        { withCredentials: true }
+      );
       setQueues((prev) => prev.filter((q) => q._id !== deleteId));
       setDeleteId(null);
     } catch (err) {

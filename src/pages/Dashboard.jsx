@@ -64,10 +64,10 @@ export default function Dashboard() {
                 Simplify Healthcare Visits
               </span>
               <br />
-              with MediQueue
+              with ClinicFlow
             </h1>
             <p className="text-gray-700 text-lg md:text-xl max-w-md">
-              MediQueue is a smart queue and appointment management app designed to connect
+              ClinicFlow is a smart queue and appointment management app designed to connect
               patients with healthcare providers more efficiently. Experience seamless scheduling and live queue tracking.
             </p>
             <div className="flex justify-center md:justify-start gap-4 mt-4">
